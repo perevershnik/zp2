@@ -177,7 +177,7 @@
         <input type="checkbox" id="toggleNovachky">
         <span class="slider round"></span>
       </span>
-      Включити тарифи для новачків / робочі години
+      Включити тарифы для новачків
     </label>
 
     <!-- Поле годин -->
@@ -324,14 +324,15 @@
     share.addEventListener('click', () => {
       const today = new Date();
       const day = today.getDate().toString().padStart(2, '0');
-      const month = (today.getMonth()+1).toString().padStart(2, '0');
+      const month = (today.getMonth() + 1).toString().padStart(2, '0');
       const year = today.getFullYear();
       const formattedDate = `${day}.${month}.${year}`;
 
       const earnings = total.textContent.split(': ')[1];
-      const text = `Мій заробіток (${formattedDate}) — ${earnings}`;
+      const text = `Мій заробіток (${formattedDate}) — ${earnings}\nПеревір свій результат тут: https://perevershnik.github.io/zp/`;
 
-      const url = `https://t.me/share/url?url=${encodeURIComponent('https://perevershnik.github.io/zp/')}&text=${encodeURIComponent(text)}`;
+      // Ссылка в тексте, url оставляем пустым
+      const url = `https://t.me/share/url?url=&text=${encodeURIComponent(text)}`;
       window.open(url, '_blank');
     });
   </script>
