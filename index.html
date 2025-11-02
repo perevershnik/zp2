@@ -1,299 +1,340 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Калькулятор зарплати</title>
-<style>
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #f0f4f8;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 2rem;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Розрахунок ЗП</title>
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4b0.svg" type="image/svg+xml">
+  <style>
+    body {
+      font-family: "Inter", Arial, sans-serif;
+      margin: 0;
+      padding: 1rem;
+      background: radial-gradient(circle at top left, #e3f2fd, #fce4ec);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
 
-.container {
-  background: #fff;
-  width: 95%;
-  max-width: 400px;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
+    .container {
+      width: 90%;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 20px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 1.5rem;
+      animation: fadeIn 1s ease;
+    }
 
-h1 {
-  text-align: center;
-  margin-bottom: 1rem;
-  color: #333;
-}
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-.field-label {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 0.8rem;
-  font-weight: bold;
-  color: #555;
-}
+    h1 {
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #333;
+      letter-spacing: 0.5px;
+    }
 
-input[type="number"] {
-  width: 100%;
-  max-width: 100px;
-  padding: 0.5rem;
-  margin-top: 0.2rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  text-align: center;
-  font-size: 1rem;
-}
+    label {
+      display: block;
+      margin: 0.6rem 0 0.3rem;
+      color: #333;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
 
-.result {
-  text-align: center;
-  margin-top: 1rem;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #111;
-}
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 0.8rem;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #222;
+      font-size: 1rem;
+      text-align: center;
+      transition: box-shadow 0.3s ease, transform 0.2s ease;
+    }
 
-.buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
+    input:focus {
+      outline: none;
+      box-shadow: 0 0 10px rgba(100, 181, 246, 0.8);
+      transform: scale(1.02);
+    }
 
-button {
-  padding: 0.8rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background-color: #4a90e2;
-  color: white;
-  transition: background 0.2s;
-}
+    .result {
+      text-align: center;
+      margin-top: 1rem;
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: #222;
+      transition: all 0.3s ease;
+    }
 
-button:hover {
-  background-color: #357abd;
-}
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+    }
 
-.toggle-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  font-weight: bold;
-  color: #555;
-}
+    button {
+      width: 100%;
+      padding: 0.7rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #64b5f6, #ba68c8);
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
 
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 26px;
-}
+    button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 10px rgba(100, 181, 246, 0.5);
+    }
 
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
+    button:active {
+      transform: scale(0.97);
+    }
 
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top:0; left:0; right:0; bottom:0;
-  background-color: #ccc;
-  transition: 0.4s;
-  border-radius: 34px;
-}
+    .footer {
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      color: rgba(0, 0, 0, 0.5);
+      text-align: center;
+      user-select: none;
+    }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 20px; width: 20px;
-  left: 3px; bottom: 3px;
-  background-color: white;
-  border-radius: 50%;
-  transition: 0.4s;
-}
+    /* Тумблер */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+      vertical-align: middle;
+    }
 
-input:checked + .slider {
-  background-color: #4a90e2;
-}
+    .switch input { 
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
 
-input:checked + .slider:before {
-  transform: translateX(24px);
-}
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 34px;
+    }
 
-#hoursContainer {
-  display: none;
-}
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px; width: 20px;
+      left: 3px; bottom: 3px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
 
-.hint {
-  font-size: 0.85rem;
-  color: #555;
-  margin-top: 0.2rem;
-  display: none;
-}
-.hint-button {
-  background: none;
-  border: none;
-  font-size: 1rem;
-  cursor: pointer;
-  color: #4a90e2;
-  margin-left: 5px;
-}
-</style>
+    input:checked + .slider {
+      background-color: #64b5f6;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      color: #333;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-<h1>💼 Калькулятор зарплати</h1>
+  <div class="container">
+    <h1>💼 Розрахунок зарплати</h1>
 
-<label class="toggle-label">
-  <span class="switch">
-    <input type="checkbox" id="toggleNovachky">
-    <span class="slider"></span>
-  </span>
-  Включити тарифи для новачків
-</label>
+    <!-- Тумблер -->
+    <label class="toggle-label">
+      <span class="switch">
+        <input type="checkbox" id="toggleNovachky">
+        <span class="slider round"></span>
+      </span>
+      Включити тарифы для новачків
+    </label>
 
-<div id="hoursContainer">
-  <label class="field-label">🕒 Робочі години (46,72 грн/год)</label>
-  <input type="number" id="hours">
-</div>
+    <!-- Поле годин -->
+    <div id="hoursContainer" style="display:none;">
+      <label>🕒 Робочі години (46,72 грн/год):</label>
+      <input type="number" id="hours" value="">
+    </div>
 
-<div>
-  <label class="field-label">
-    📦 Збирання в ДС (1,34 грн)
-    <button class="hint-button" data-hint="За кожен зібраний товар у ДС виплата 1,34 грн">❔</button>
-  </label>
-  <input type="number" id="ds">
-  <div class="hint" id="hint-ds"></div>
-</div>
+    <label id="labelDs">📦 Збирання в ДС (1,34 грн):</label>
+    <input type="number" id="ds" value="">
 
-<div>
-  <label class="field-label">
-    🛒 Збирання в ТЗ (2,69 грн)
-    <button class="hint-button" data-hint="За кожен зібраний товар у ТЗ виплата 2,69 грн">❔</button>
-  </label>
-  <input type="number" id="tz">
-  <div class="hint" id="hint-tz"></div>
-</div>
+    <label id="labelTz">🛒 Збирання в ТЗ (2,69 грн):</label>
+    <input type="number" id="tz" value="">
 
-<div>
-  <label class="field-label">
-    🔁 Переміщення товарів з ТЗ (3,32 грн)
-    <button class="hint-button" data-hint="За кожне переміщення товарів із ТЗ виплата 3,32 грн">❔</button>
-  </label>
-  <input type="number" id="move">
-  <div class="hint" id="hint-move"></div>
-</div>
+    <label id="labelMove">🔁 Переміщення товарів з ТЗ (3,32 грн):</label>
+    <input type="number" id="move" value="">
 
-<div>
-  <label class="field-label">
-    📥 Розміщення товарів у ДС (1,53 грн)
-    <button class="hint-button" data-hint="За кожне розміщення товарів у ДС виплата 1,53 грн">❔</button>
-  </label>
-  <input type="number" id="place">
-  <div class="hint" id="hint-place"></div>
-</div>
+    <label id="labelPlace">📥 Розміщення товарів у ДС (1,53 грн):</label>
+    <input type="number" id="place" value="">
 
-<div>
-  <label class="field-label">
-    ⚖️ Вага розміщення (0,14 грн)
-    <button class="hint-button" data-hint="За кожну одиницю ваги виплата 0,14 грн">❔</button>
-  </label>
-  <input type="number" id="weight">
-  <div class="hint" id="hint-weight"></div>
-</div>
+    <label id="labelWeight">⚖️ Вага розміщення (0,14 грн):</label>
+    <input type="number" id="weight" value="">
 
-<div>
-  <label class="field-label">
-    🎁 Пакування замовлення (0,27 грн)
-    <button class="hint-button" data-hint="За кожне пакування замовлення виплата 0,27 грн">❔</button>
-  </label>
-  <input type="number" id="pack">
-  <div class="hint" id="hint-pack"></div>
-</div>
+    <label id="labelPack">🎁 Пакування замовлення (0,27 грн):</label>
+    <input type="number" id="pack" value="">
 
-<div class="result" id="total">Всього: 0 грн</div>
+    <div class="result" id="total">Всього: 0 грн</div>
 
-<div class="buttons">
-  <button id="reset">🧹 Очистити все</button>
-  <button id="share">📤 Поділитись у Telegram</button>
-</div>
-</div>
+    <div class="buttons">
+      <button id="reset">🧹 Очистити все</button>
+      <button id="share">📤 Поділитись у Telegram</button>
+    </div>
+  </div>
 
-<script>
-const baseRates = { ds:1.34, tz:2.69, move:3.32, place:1.53, weight:0.14, pack:0.27 };
-const newRates = { ds:0.67, tz:1.34, move:1.66, place:0.76, weight:0.07, pack:0.14 };
-let rates = {...baseRates};
-const hourlyRate = 46.72;
+  <div class="footer">
+    © 2025 Стоцький В.В.
+  </div>
 
-const ds = document.getElementById('ds');
-const tz = document.getElementById('tz');
-const move = document.getElementById('move');
-const place = document.getElementById('place');
-const weight = document.getElementById('weight');
-const pack = document.getElementById('pack');
-const hours = document.getElementById('hours');
-const total = document.getElementById('total');
-const reset = document.getElementById('reset');
-const share = document.getElementById('share');
-const toggle = document.getElementById('toggleNovachky');
-const hoursContainer = document.getElementById('hoursContainer');
+  <script>
+    const baseRates = {
+      ds: 1.34,
+      tz: 2.69,
+      move: 3.32,
+      place: 1.53,
+      weight: 0.14,
+      pack: 0.27
+    };
 
-function updateTotal(){
-  let sum = (rates.ds*Number(ds.value||0)) + (rates.tz*Number(tz.value||0)) +
-            (rates.move*Number(move.value||0)) + (rates.place*Number(place.value||0)) +
-            (rates.weight*Number(weight.value||0)) + (rates.pack*Number(pack.value||0)) +
-            (Number(hours.value||0)*hourlyRate);
-  total.textContent = `Всього: ${sum.toFixed(2)} грн`;
-}
+    const newRates = {
+      ds: 0.67,
+      tz: 1.34,
+      move: 1.66,
+      place: 0.76,
+      weight: 0.07,
+      pack: 0.14
+    };
 
-[ds,tz,move,place,weight,pack,hours].forEach(i=>i.addEventListener('input',updateTotal));
+    let rates = {...baseRates};
+    const hourlyRate = 46.72;
 
-toggle.addEventListener('change',()=>{
-  if(toggle.checked){ 
-    hoursContainer.style.display='block'; 
-    rates={...newRates}; 
-  } else{ 
-    hoursContainer.style.display='none'; 
-    hours.value=''; 
-    rates={...baseRates};
-  }
-  updateTotal();
-});
+    const ds = document.getElementById('ds');
+    const tz = document.getElementById('tz');
+    const move = document.getElementById('move');
+    const place = document.getElementById('place');
+    const weight = document.getElementById('weight');
+    const pack = document.getElementById('pack');
+    const hours = document.getElementById('hours');
 
-reset.addEventListener('click',()=>{ 
-  [ds,tz,move,place,weight,pack,hours].forEach(i=>i.value=''); 
-  updateTotal(); 
-});
+    const total = document.getElementById('total');
+    const reset = document.getElementById('reset');
+    const share = document.getElementById('share');
+    const toggle = document.getElementById('toggleNovachky');
+    const hoursContainer = document.getElementById('hoursContainer');
 
-share.addEventListener('click',()=>{
-  const today = new Date();
-  const d = today.getDate().toString().padStart(2,'0');
-  const m = (today.getMonth()+1).toString().padStart(2,'0');
-  const y = today.getFullYear();
-  const text = `Мій заробіток (${d}.${m}.${y}) — ${total.textContent.split(': ')[1]}\nПеревір свій результат тут: https://perevershnik.github.io/zp/`;
-  const url = `https://t.me/share/url?url=&text=${encodeURIComponent(text)}`;
-  window.open(url,'_blank');
-});
+    const labels = {
+      ds: document.getElementById('labelDs'),
+      tz: document.getElementById('labelTz'),
+      move: document.getElementById('labelMove'),
+      place: document.getElementById('labelPlace'),
+      weight: document.getElementById('labelWeight'),
+      pack: document.getElementById('labelPack')
+    };
 
-// Подсказки
-document.querySelectorAll('.hint-button').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    const hintId = 'hint-' + btn.parentElement.parentElement.querySelector('input').id;
-    const hintDiv = document.getElementById(hintId);
-    hintDiv.style.display = hintDiv.style.display==='block' ? 'none' : 'block';
-    hintDiv.textContent = btn.dataset.hint;
-  });
-});
-</script>
+    function updateTotal(){
+      let sum =
+        (rates.ds * Number(ds.value || 0)) +
+        (rates.tz * Number(tz.value || 0)) +
+        (rates.move * Number(move.value || 0)) +
+        (rates.place * Number(place.value || 0)) +
+        (rates.weight * Number(weight.value || 0)) +
+        (rates.pack * Number(pack.value || 0)) +
+        (Number(hours.value || 0) * hourlyRate);
+
+      total.textContent = `Всього: ${sum.toFixed(2)} грн`;
+      total.style.transform = "scale(1.1)";
+      setTimeout(() => total.style.transform = "scale(1)", 150);
+    }
+
+    [ds, tz, move, place, weight, pack, hours].forEach(input=>{
+      input.addEventListener('input', updateTotal);
+      input.addEventListener('focus', ()=>{ if(input.value==='0') input.value=''; });
+    });
+
+    toggle.addEventListener('change', ()=>{
+      if(toggle.checked){
+        hoursContainer.style.display = 'block';
+        rates = {...newRates};
+
+        labels.ds.textContent = `📦 Збирання в ДС (${newRates.ds} грн):`;
+        labels.tz.textContent = `🛒 Збирання в ТЗ (${newRates.tz} грн):`;
+        labels.move.textContent = `🔁 Переміщення товарів з ТЗ (${newRates.move} грн):`;
+        labels.place.textContent = `📥 Розміщення товарів у ДС (${newRates.place} грн):`;
+        labels.weight.textContent = `⚖️ Вага розміщення (${newRates.weight} грн):`;
+        labels.pack.textContent = `🎁 Пакування замовлення (${newRates.pack} грн):`;
+      } else {
+        hoursContainer.style.display = 'none';
+        hours.value = '';
+        rates = {...baseRates};
+
+        labels.ds.textContent = `📦 Збирання в ДС (${baseRates.ds} грн):`;
+        labels.tz.textContent = `🛒 Збирання в ТЗ (${baseRates.tz} грн):`;
+        labels.move.textContent = `🔁 Переміщення товарів з ТЗ (${baseRates.move} грн):`;
+        labels.place.textContent = `📥 Розміщення товарів у ДС (${baseRates.place} грн):`;
+        labels.weight.textContent = `⚖️ Вага розміщення (${baseRates.weight} грн):`;
+        labels.pack.textContent = `🎁 Пакування замовлення (${baseRates.pack} грн):`;
+      }
+      updateTotal();
+    });
+
+    reset.addEventListener('click', ()=>{
+      [ds, tz, move, place, weight, pack, hours].forEach(i=>i.value='');
+      toggle.checked = false;
+      hoursContainer.style.display='none';
+      rates = {...baseRates};
+      labels.ds.textContent = `📦 Збирання в ДС (${baseRates.ds} грн):`;
+      labels.tz.textContent = `🛒 Збирання в ТЗ (${baseRates.tz} грн):`;
+      labels.move.textContent = `🔁 Переміщення товарів з ТЗ (${baseRates.move} грн):`;
+      labels.place.textContent = `📥 Розміщення товарів у ДС (${baseRates.place} грн):`;
+      labels.weight.textContent = `⚖️ Вага розміщення (${baseRates.weight} грн):`;
+      labels.pack.textContent = `🎁 Пакування замовлення (${baseRates.pack} грн):`;
+      updateTotal();
+    });
+
+    share.addEventListener('click', () => {
+      const today = new Date();
+      const day = today.getDate().toString().padStart(2, '0');
+      const month = (today.getMonth() + 1).toString().padStart(2, '0');
+      const year = today.getFullYear();
+      const formattedDate = `${day}.${month}.${year}`;
+
+      const earnings = total.textContent.split(': ')[1];
+      const text = `Мій заробіток (${formattedDate}) — ${earnings}\nПеревір свій результат тут: https://perevershnik.github.io/zp/`;
+
+      // Ссылка в тексте, url оставляем пустым
+      const url = `https://t.me/share/url?url=&text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    });
+  </script>
 </body>
 </html>
