@@ -28,6 +28,7 @@
       -webkit-backdrop-filter: blur(10px);
       padding: 1.5rem;
       animation: fadeIn 1s ease;
+      transition: background 0.5s ease;
     }
 
     @keyframes fadeIn {
@@ -49,6 +50,7 @@
       color: #333;
       font-size: 0.9rem;
       font-weight: 500;
+      transition: color 0.5s;
     }
 
     input {
@@ -182,26 +184,26 @@
 
     <!-- Поле годин -->
     <div id="hoursContainer" style="display:none;">
-      <label>🕒 Робочі години (46,72 грн/год):</label>
+      <label title="Робочі години за ставкою 46,72 грн/год">🕒 Робочі години (46,72 грн/год):</label>
       <input type="number" id="hours" value="">
     </div>
 
-    <label id="labelDs">📦 Збирання в ДС (1,34 грн):</label>
+    <label id="labelDs" title="Сумма за збирання в ДС, ставка 1,34 грн за одиницю">📦 Збирання в ДС (1,34 грн):</label>
     <input type="number" id="ds" value="">
 
-    <label id="labelTz">🛒 Збирання в ТЗ (2,69 грн):</label>
+    <label id="labelTz" title="Сумма за збирання в ТЗ, ставка 2,69 грн за одиницю">🛒 Збирання в ТЗ (2,69 грн):</label>
     <input type="number" id="tz" value="">
 
-    <label id="labelMove">🔁 Переміщення товарів з ТЗ (3,32 грн):</label>
+    <label id="labelMove" title="Сумма за переміщення товарів з ТЗ, ставка 3,32 грн за одиницю">🔁 Переміщення товарів з ТЗ (3,32 грн):</label>
     <input type="number" id="move" value="">
 
-    <label id="labelPlace">📥 Розміщення товарів у ДС (1,53 грн):</label>
+    <label id="labelPlace" title="Сумма за розміщення товарів у ДС, ставка 1,53 грн за одиницю">📥 Розміщення товарів у ДС (1,53 грн):</label>
     <input type="number" id="place" value="">
 
-    <label id="labelWeight">⚖️ Вага розміщення (0,14 грн):</label>
+    <label id="labelWeight" title="Сумма за вагу розміщення, ставка 0,14 грн за одиницю">⚖️ Вага розміщення (0,14 грн):</label>
     <input type="number" id="weight" value="">
 
-    <label id="labelPack">🎁 Пакування замовлення (0,27 грн):</label>
+    <label id="labelPack" title="Сумма за пакування замовлення, ставка 0,27 грн за одиницю">🎁 Пакування замовлення (0,27 грн):</label>
     <input type="number" id="pack" value="">
 
     <div class="result" id="total">Всього: 0 грн</div>
@@ -213,7 +215,7 @@
   </div>
 
   <div class="footer">
-    Version 1.0 © 2025 Стоцький В.В.
+    © 2025 Стоцький В.В.
   </div>
 
   <script>
@@ -251,6 +253,7 @@
     const share = document.getElementById('share');
     const toggle = document.getElementById('toggleNovachky');
     const hoursContainer = document.getElementById('hoursContainer');
+    const container = document.querySelector('.container');
 
     const labels = {
       ds: document.getElementById('labelDs'),
@@ -285,45 +288,32 @@
       if(toggle.checked){
         hoursContainer.style.display = 'block';
         rates = {...newRates};
-
-        labels.ds.textContent = `📦 Збирання в ДС (${newRates.ds} грн):`;
-        labels.tz.textContent = `🛒 Збирання в ТЗ (${newRates.tz} грн):`;
-        labels.move.textContent = `🔁 Переміщення товарів з ТЗ (${newRates.move} грн):`;
-        labels.place.textContent = `📥 Розміщення товарів у ДС (${newRates.place} грн):`;
-        labels.weight.textContent = `⚖️ Вага розміщення (${newRates.weight} грн):`;
-        labels.pack.textContent = `🎁 Пакування замовлення (${newRates.pack} грн):`;
+        container.style.background = 'radial-gradient(circle at top left, #e0f7fa, #f3e5f5)';
+        Object.values(labels).forEach(label => label.style.color = '#00796b');
       } else {
         hoursContainer.style.display = 'none';
         hours.value = '';
         rates = {...baseRates};
-
-        labels.ds.textContent = `📦 Збирання в ДС (${baseRates.ds} грн):`;
-        labels.tz.textContent = `🛒 Збирання в ТЗ (${baseRates.tz} грн):`;
-        labels.move.textContent = `🔁 Переміщення товарів з ТЗ (${baseRates.move} грн):`;
-        labels.place.textContent = `📥 Розміщення товарів у ДС (${baseRates.place} грн):`;
-        labels.weight.textContent = `⚖️ Вага розміщення (${baseRates.weight} грн):`;
-        labels.pack.textContent = `🎁 Пакування замовлення (${baseRates.pack} грн):`;
+        container.style.background = 'radial-gradient(circle at top left, #e3f2fd, #fce4ec)';
+        Object.values(labels).forEach(label => label.style.color = '#333');
       }
       updateTotal();
     });
 
     reset.addEventListener('click', ()=>{
-      // Очищаем только поля ввода, тумблер остаётся как был
       [ds, tz, move, place, weight, pack, hours].forEach(i => i.value = '');
       updateTotal();
     });
 
     share.addEventListener('click', () => {
       const today = new Date();
-      const day = today.getDate().toString().padStart(2, '0');
-      const month = (today.getMonth() + 1).toString().padStart(2, '0');
+      const day = today.getDate().toString().padStart(2,'0');
+      const month = (today.getMonth()+1).toString().padStart(2,'0');
       const year = today.getFullYear();
       const formattedDate = `${day}.${month}.${year}`;
 
       const earnings = total.textContent.split(': ')[1];
       const text = `Мій заробіток (${formattedDate}) — ${earnings}\nПеревір свій результат тут: https://perevershnik.github.io/zp/`;
-
-      // Ссылка в тексте, url оставляем пустым
       const url = `https://t.me/share/url?url=&text=${encodeURIComponent(text)}`;
       window.open(url, '_blank');
     });
