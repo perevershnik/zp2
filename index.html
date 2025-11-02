@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Меню калькуляторів</title>
   <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4b0.svg" type="image/svg+xml">
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
   <style>
     body {
       font-family: "Inter", Arial, sans-serif;
@@ -35,7 +36,6 @@
     }
 
     .menu h1 { margin-bottom: 1rem; color: #333; }
-
     .menu button {
       width: 100%;
       padding: 0.7rem;
@@ -48,7 +48,6 @@
       transition: transform 0.2s ease, box-shadow 0.3s ease;
       margin-bottom: 0.6rem;
     }
-
     .menu button:hover { transform: scale(1.03); box-shadow: 0 0 10px rgba(100,181,246,0.5); }
     .menu button:active { transform: scale(0.97); }
 
@@ -86,8 +85,6 @@
     input:checked + .slider { background-color:#64b5f6; }
     input:checked + .slider:before { transform: translateX(24px); }
     .toggle-label { display:flex; align-items:center; gap:0.5rem; margin-bottom:1rem; font-size:0.9rem; color:#333; }
-
-    /* === QR блок === */
     .qr-block img { max-width:100%; margin-top:1rem; display:block; margin-left:auto; margin-right:auto; }
   </style>
 </head>
@@ -95,7 +92,7 @@
 
   <!-- === Меню === -->
   <div class="menu" id="menu">
-    <h1>📋 Меню </h1>
+    <h1>📋 Меню калькуляторів</h1>
     <button id="btnZP">💼 Розрахунок зарплати</button>
     <button id="btnQR">📱 QR-коди комірок</button>
   </div>
@@ -142,9 +139,16 @@
   <!-- === QR код блок === -->
   <div class="container hidden" id="qrBlock">
     <h1>📱 QR-коди комірок</h1>
-    <div class="qr-block">
-      <p>Тут пізніше можна буде вибирати комірку і показувати QR-код</p>
-    </div>
+    
+    <label>Виберіть комірку:</label>
+    <select id="cellSelect">
+      <option value="">Виберіть комірку</option>
+      <option value="64-2">64-2</option>
+      <!-- Позже можно добавить все 100+ комірок -->
+    </select>
+
+    <div id="qrContainer" style="margin-top: 20px;"></div>
+
     <div class="buttons">
       <button class="calc-btn" id="backQR">⬅️ Повернутись у меню</button>
     </div>
@@ -186,8 +190,8 @@
     });
 
     // === Калькулятор зарплати ===
-    const baseRates = { ds: 1.34, tz: 2.69, move: 3.32, place: 1.53, weight: 0.14, pack: 0.27 };
-    const newRates = { ds: 0.67, tz: 1.34, move: 1.66, place: 0.76, weight: 0.07, pack: 0.14 };
+    const baseRates = { ds:1.34, tz:2.69, move:3.32, place:1.53, weight:0.14, pack:0.27 };
+    const newRates  = { ds:0.67, tz:1.34, move:1.66, place:0.76, weight:0.07, pack:0.14 };
     let rates = {...baseRates};
     const hourlyRate = 46.72;
 
@@ -198,7 +202,6 @@
     const weight = document.getElementById('weight');
     const pack = document.getElementById('pack');
     const hours = document.getElementById('hours');
-
     const total = document.getElementById('total');
     const reset = document.getElementById('reset');
     const share = document.getElementById('share');
@@ -214,64 +217,86 @@
       pack: document.getElementById('labelPack')
     };
 
-    function updateTotal(){
+    function updateTotal() {
       let sum =
-        (rates.ds * Number(ds.value || 0)) +
-        (rates.tz * Number(tz.value || 0)) +
-        (rates.move * Number(move.value || 0)) +
-        (rates.place * Number(place.value || 0)) +
-        (rates.weight * Number(weight.value || 0)) +
-        (rates.pack * Number(pack.value || 0)) +
-        (Number(hours.value || 0) * hourlyRate);
+        (rates.ds * Number(ds.value||0)) +
+        (rates.tz * Number(tz.value||0)) +
+        (rates.move * Number(move.value||0)) +
+        (rates.place * Number(place.value||0)) +
+        (rates.weight * Number(weight.value||0)) +
+        (rates.pack * Number(pack.value||0)) +
+        (Number(hours.value||0) * hourlyRate);
       total.textContent = `Всього: ${sum.toFixed(2)} грн`;
       total.style.transform = "scale(1.1)";
-      setTimeout(() => total.style.transform = "scale(1)", 150);
+      setTimeout(()=>total.style.transform="scale(1)",150);
     }
 
-    [ds, tz, move, place, weight, pack, hours].forEach(input=>{
-      input.addEventListener('input', updateTotal);
-      input.addEventListener('focus', ()=>{ if(input.value==='0') input.value=''; });
+    [ds,tz,move,place,weight,pack,hours].forEach(i=>{
+      i.addEventListener('input', updateTotal);
+      i.addEventListener('focus', ()=>{ if(i.value==='0') i.value=''; });
     });
 
     toggle.addEventListener('change', ()=>{
       if(toggle.checked){
-        hoursContainer.style.display = 'block';
+        hoursContainer.style.display='block';
         rates = {...newRates};
-        labels.ds.textContent = `📦 Збирання в ДС (${newRates.ds} грн):`;
-        labels.tz.textContent = `🛒 Збирання в ТЗ (${newRates.tz} грн):`;
-        labels.move.textContent = `🔁 Переміщення товарів з ТЗ (${newRates.move} грн):`;
-        labels.place.textContent = `📥 Розміщення товарів у ДС (${newRates.place} грн):`;
-        labels.weight.textContent = `⚖️ Вага розміщення (${newRates.weight} грн):`;
-        labels.pack.textContent = `🎁 Пакування замовлення (${newRates.pack} грн):`;
+        labels.ds.textContent=`📦 Збирання в ДС (${newRates.ds} грн):`;
+        labels.tz.textContent=`🛒 Збирання в ТЗ (${newRates.tz} грн):`;
+        labels.move.textContent=`🔁 Переміщення товарів з ТЗ (${newRates.move} грн):`;
+        labels.place.textContent=`📥 Розміщення товарів у ДС (${newRates.place} грн):`;
+        labels.weight.textContent=`⚖️ Вага розміщення (${newRates.weight} грн):`;
+        labels.pack.textContent=`🎁 Пакування замовлення (${newRates.pack} грн):`;
       } else {
-        hoursContainer.style.display = 'none';
-        hours.value = '';
+        hoursContainer.style.display='none';
+        hours.value='';
         rates = {...baseRates};
-        labels.ds.textContent = `📦 Збирання в ДС (${baseRates.ds} грн):`;
-        labels.tz.textContent = `🛒 Збирання в ТЗ (${baseRates.tz} грн):`;
-        labels.move.textContent = `🔁 Переміщення товарів з ТЗ (${baseRates.move} грн):`;
-        labels.place.textContent = `📥 Розміщення товарів у ДС (${baseRates.place} грн):`;
-        labels.weight.textContent = `⚖️ Вага розміщення (${baseRates.weight} грн):`;
-        labels.pack.textContent = `🎁 Пакування замовлення (${baseRates.pack} грн):`;
+        labels.ds.textContent=`📦 Збирання в ДС (${baseRates.ds} грн):`;
+        labels.tz.textContent=`🛒 Збирання в ТЗ (${baseRates.tz} грн):`;
+        labels.move.textContent=`🔁 Переміщення товарів з ТЗ (${baseRates.move} грн):`;
+        labels.place.textContent=`📥 Розміщення товарів у ДС (${baseRates.place} грн):`;
+        labels.weight.textContent=`⚖️ Вага розміщення (${baseRates.weight} грн):`;
+        labels.pack.textContent=`🎁 Пакування замовлення (${baseRates.pack} грн):`;
       }
       updateTotal();
     });
 
     reset.addEventListener('click', ()=>{
-      [ds, tz, move, place, weight, pack, hours].forEach(i => i.value = '');
+      [ds,tz,move,place,weight,pack,hours].forEach(i=>i.value='');
       updateTotal();
     });
 
-    share.addEventListener('click', () => {
-      const today = new Date();
-      const day = today.getDate().toString().padStart(2,'0');
-      const month = (today.getMonth()+1).toString().padStart(2,'0');
-      const year = today.getFullYear();
-      const formattedDate = `${day}.${month}.${year}`;
-      const earnings = total.textContent.split(': ')[1];
-      const text = `Мій заробіток (${formattedDate}) — ${earnings}\nПеревір свій результат тут: https://perevershnik.github.io/zp/`;
-      const url = `https://t.me/share/url?url=&text=${encodeURIComponent(text)}`;
-      window.open(url, '_blank');
+    share.addEventListener('click', ()=>{
+      const today=new Date();
+      const day=today.getDate().toString().padStart(2,'0');
+      const month=(today.getMonth()+1).toString().padStart(2,'0');
+      const year=today.getFullYear();
+      const formattedDate=`${day}.${month}.${year}`;
+      const earnings=total.textContent.split(': ')[1];
+      const text=`Мій заробіток (${formattedDate}) — ${earnings}\nПеревір свій результат тут: https://perevershnik.github.io/zp/`;
+      const url=`https://t.me/share/url?url=&text=${encodeURIComponent(text)}`;
+      window.open(url,'_blank');
+    });
+
+    // === QR-коди ===
+    const qrData = {
+      "64-2": "a52472c3-8287-4cc0-8450-5cda06ef4bb6"
+      // Позже сюда можно добавить все 100+ комірок
+    };
+    let qr;
+    const cellSelect = document.getElementById('cellSelect');
+    const qrContainer = document.getElementById('qrContainer');
+
+    cellSelect.addEventListener('change', function(){
+      const code = qrData[this.value];
+      qrContainer.innerHTML = "";
+      if(code){
+        qr = new QRCode(qrContainer, {
+          text: code,
+          width: 200,
+          height: 200,
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      }
     });
   </script>
 
