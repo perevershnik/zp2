@@ -3,75 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Меню калькуляторів</title>
+  <title>МЕНЮ</title>
   <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4b0.svg" type="image/svg+xml">
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
   <style>
     body {
-      font-family: "Inter", Arial, sans-serif;
-      margin: 0;
-      padding: 1rem;
-      background: radial-gradient(circle at top left, #e3f2fd, #fce4ec);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+      font-family:"Inter",Arial,sans-serif;
+      margin:0; padding:1rem;
+      background:radial-gradient(circle at top left, #e3f2fd, #fce4ec);
+      min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;
     }
-    .hidden { display: none; }
-
-    /* Меню */
-    .menu {
-      width: 90%;
-      max-width: 400px;
-      background: rgba(255,255,255,0.7);
-      border-radius: 20px;
-      box-shadow: 0 4px 30px rgba(0,0,0,0.1);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      padding: 1.5rem;
-      animation: fadeIn 1s ease;
-      text-align: center;
+    .hidden { display:none; }
+    .menu, .container {
+      width:90%; max-width:400px;
+      background:rgba(255,255,255,0.7);
+      border-radius:20px;
+      box-shadow:0 4px 30px rgba(0,0,0,0.1);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      padding:1.5rem; animation:fadeIn 1s ease; text-align:center;
     }
-    .menu h1 { margin-bottom: 1rem; color: #333; }
-    .menu button {
-      width: 100%;
-      padding: 0.7rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: 12px;
-      background: linear-gradient(90deg, #64b5f6, #ba68c8);
-      color: #fff;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.3s ease;
-      margin-bottom: 0.6rem;
+    .menu h1, .container h1 { margin-bottom:1rem; color:#333; }
+    .menu button, .calc-btn {
+      width:100%; padding:0.7rem; font-size:1rem; border:none; border-radius:12px;
+      background:linear-gradient(90deg,#64b5f6,#ba68c8); color:#fff; cursor:pointer;
+      transition:transform 0.2s ease, box-shadow 0.3s ease; margin-bottom:0.6rem;
     }
-    .menu button:hover { transform: scale(1.03); box-shadow: 0 0 10px rgba(100,181,246,0.5); }
-    .menu button:active { transform: scale(0.97); }
-
-    @keyframes fadeIn { from { opacity:0; transform:translateY(15px); } to { opacity:1; transform:translateY(0); } }
-
-    /* Контейнеры */
-    .container {
-      width: 90%;
-      max-width: 400px;
-      background: rgba(255,255,255,0.6);
-      border-radius: 20px;
-      box-shadow: 0 4px 30px rgba(0,0,0,0.1);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      padding: 1.5rem;
-      animation: fadeIn 1s ease;
-    }
-    h1 { font-size:1.1rem; text-align:center; margin-bottom:1rem; color:#333; letter-spacing:0.5px; }
+    .menu button:hover, .calc-btn:hover { transform:scale(1.03); box-shadow:0 0 10px rgba(100,181,246,0.5); }
+    .menu button:active, .calc-btn:active { transform:scale(0.97); }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(15px);} to { opacity:1; transform:translateY(0);} }
     label { display:block; margin:0.6rem 0 0.3rem; color:#333; font-size:0.9rem; font-weight:500; }
-    input { width:100%; padding:0.5rem; margin-bottom:0.8rem; border:1px solid rgba(0,0,0,0.2); border-radius:10px; background: rgba(255,255,255,0.9); color:#222; font-size:1rem; text-align:center; transition: box-shadow 0.3s ease, transform 0.2s ease; }
-    input:focus { outline:none; box-shadow:0 0 10px rgba(100,181,246,0.8); transform:scale(1.02); }
+    input { width:100%; padding:0.5rem; margin-bottom:0.8rem; border:1px solid rgba(0,0,0,0.2);
+      border-radius:10px; background:rgba(255,255,255,0.9); color:#222; font-size:1rem; text-align:center;
+      transition:box-shadow 0.3s ease, transform 0.2s ease; }
+    input:focus { outline:none; box-shadow:0 0 10px rgba(100,181,246,0.8); transform:scale(1.02);}
     .result { text-align:center; margin-top:1rem; font-weight:bold; font-size:1.2rem; color:#222; transition: all 0.3s ease; }
     .buttons { display:flex; flex-direction:column; gap:0.5rem; margin-top:0.8rem; }
-    button.calc-btn { width:100%; padding:0.7rem; font-size:1rem; border:none; border-radius:12px; background: linear-gradient(90deg, #64b5f6, #ba68c8); color:#fff; cursor:pointer; transition: transform 0.2s ease, box-shadow 0.3s ease; }
-    button.calc-btn:hover { transform: scale(1.03); box-shadow: 0 0 10px rgba(100,181,246,0.5); }
-    button.calc-btn:active { transform: scale(0.97); }
     .footer { margin-top:1rem; font-size:0.75rem; color:rgba(0,0,0,0.5); text-align:center; user-select:none; }
     .switch { position:relative; display:inline-block; width:50px; height:26px; vertical-align:middle; }
     .switch input { opacity:0; width:0; height:0; }
@@ -80,14 +47,14 @@
     input:checked + .slider { background-color:#64b5f6; }
     input:checked + .slider:before { transform: translateX(24px); }
     .toggle-label { display:flex; align-items:center; gap:0.5rem; margin-bottom:1rem; font-size:0.9rem; color:#333; }
-    .qr-block img { max-width:100%; margin-top:1rem; display:block; margin-left:auto; margin-right:auto; }
+    #qrContainer { display:flex; flex-direction:column; align-items:center; margin-top:20px; }
   </style>
 </head>
 <body>
 
   <!-- Меню -->
   <div class="menu" id="menu">
-    <h1>📋 Меню калькуляторів</h1>
+    <h1>📋 МЕНЮ</h1>
     <button id="btnZP">💼 Розрахунок зарплати</button>
     <button id="btnQR">📱 QR-коди комірок</button>
   </div>
@@ -147,7 +114,7 @@
       <option value="65-9">65-9</option>
       <option value="65-10">65-10</option>
     </select>
-    <div id="qrContainer" style="margin-top: 20px;"></div>
+    <div id="qrContainer"></div>
     <div class="buttons">
       <button class="calc-btn" id="backQR">⬅️ Повернутись у меню</button>
     </div>
@@ -186,15 +153,57 @@
     share.addEventListener('click',()=>{const today=new Date();const day=today.getDate().toString().padStart(2,'0');const month=(today.getMonth()+1).toString().padStart(2,'0');const year=today.getFullYear();const formattedDate=`${day}.${month}.${year}`;const earnings=total.textContent.split(': ')[1];const text=`Мій заробіток (${formattedDate}) — ${earnings}\nПеревір свій результат тут: https://perevershnik.github.io/zp/`;const url=`https://t.me/share/url?url=&text=${encodeURIComponent(text)}`;window.open(url,'_blank');});
 
     // QR-коди
-    const qrData={
-      "64-1":"uuid-64-1","64-2":"a52472c3-8287-4cc0-8450-5cda06ef4bb6","64-3":"uuid-64-3","64-4":"uuid-64-4","64-5":"uuid-64-5",
-      "64-6":"uuid-64-6","64-7":"uuid-64-7","64-8":"uuid-64-8","64-9":"uuid-64-9","64-10":"uuid-64-10",
-      "65-1":"uuid-65-1","65-2":"uuid-65-2","65-3":"uuid-65-3","65-4":"uuid-65-4","65-5":"uuid-65-5",
-      "65-6":"uuid-65-6","65-7":"uuid-65-7","65-8":"uuid-65-8","65-9":"uuid-65-9","65-10":"uuid-65-10"
+    const qrData = {
+      "64-1":"uuid-64-1",
+      "64-2":"a52472c3-8287-4cc0-8450-5cda06ef4bb6",
+      "64-3":"uuid-64-3",
+      "64-4":"uuid-64-4",
+      "64-5":"uuid-64-5",
+      "64-6":"uuid-64-6",
+      "64-7":"uuid-64-7",
+      "64-8":"uuid-64-8",
+      "64-9":"uuid-64-9",
+      "64-10":"uuid-64-10",
+      "65-1":"uuid-65-1",
+      "65-2":"uuid-65-2",
+      "65-3":"uuid-65-3",
+      "65-4":"uuid-65-4",
+      "65-5":"uuid-65-5",
+      "65-6":"uuid-65-6",
+      "65-7":"uuid-65-7",
+      "65-8":"uuid-65-8",
+      "65-9":"uuid-65-9",
+      "65-10":"uuid-65-10"
     };
-    let qr; const cellSelect=document.getElementById('cellSelect'); const qrContainer=document.getElementById('qrContainer');
-    cellSelect.addEventListener('change',function(){const code=qrData[this.value]; qrContainer.innerHTML=""; if(code){qr=new QRCode(qrContainer,{text:code,width:200,height:200,correctLevel:QRCode.CorrectLevel.H});}});
-  </script>
+    const qrContainer = document.getElementById('qrContainer');
+    const cellSelect = document.getElementById('cellSelect');
+    let qr;
 
+    cellSelect.addEventListener('change', function(){
+      const code = qrData[this.value];
+      qrContainer.innerHTML = "";
+      if(code){
+        const title = document.createElement('div');
+        title.textContent = this.value;
+        title.style.fontWeight = 'bold';
+        title.style.marginBottom = '10px';
+        title.style.fontSize = '18px';
+        qrContainer.appendChild(title);
+
+        const qrWrapper = document.createElement('div');
+        qrWrapper.style.display = 'flex';
+        qrWrapper.style.justifyContent = 'center';
+        qrWrapper.style.width = '100%';
+        qrContainer.appendChild(qrWrapper);
+
+        qr = new QRCode(qrWrapper, {
+          text: code,
+          width: 200,
+          height: 200,
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      }
+    });
+  </script>
 </body>
 </html>
