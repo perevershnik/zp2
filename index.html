@@ -213,7 +213,7 @@
   </div>
 
   <div class="footer">
-    © 2025 Аня Коза
+    © 2025 Стоцький В.В.
   </div>
 
   <script>
@@ -286,14 +286,13 @@
         hoursContainer.style.display = 'block';
         rates = {...newRates};
 
-        // Оновлюємо лейбли
+        // Оновлюємо лейбли для новачків
         labels.ds.textContent = `📦 Збирання в ДС (${newRates.ds} грн):`;
         labels.tz.textContent = `🛒 Збирання в ТЗ (${newRates.tz} грн):`;
         labels.move.textContent = `🔁 Переміщення товарів з ТЗ (${newRates.move} грн):`;
         labels.place.textContent = `📥 Розміщення товарів у ДС (${newRates.place} грн):`;
         labels.weight.textContent = `⚖️ Вага розміщення (${newRates.weight} грн):`;
         labels.pack.textContent = `🎁 Пакування замовлення (${newRates.pack} грн):`;
-
       } else {
         hoursContainer.style.display = 'none';
         hours.value = '';
@@ -325,8 +324,9 @@
     });
 
     share.addEventListener('click', ()=>{
-      const text = encodeURIComponent(`💼 Мій заробіток сьогодні: ${total.textContent.split(': ')[1]} 💰\nПеревір свій тут: https://perevershnik.github.io/zp/`);
-      window.open(`https://t.me/share?text=${text}`, '_blank');
+      const text = `💼 Мій заробіток сьогодні: ${total.textContent.split(': ')[1]} 💰\nПеревір свій тут: https://perevershnik.github.io/zp/`;
+      const url = `https://t.me/share/url?url=${encodeURIComponent('https://perevershnik.github.io/zp/')}&text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
     });
   </script>
 </body>
