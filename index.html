@@ -286,7 +286,6 @@
         hoursContainer.style.display = 'block';
         rates = {...newRates};
 
-        // Оновлюємо лейбли для новачків
         labels.ds.textContent = `📦 Збирання в ДС (${newRates.ds} грн):`;
         labels.tz.textContent = `🛒 Збирання в ТЗ (${newRates.tz} грн):`;
         labels.move.textContent = `🔁 Переміщення товарів з ТЗ (${newRates.move} грн):`;
@@ -298,7 +297,6 @@
         hours.value = '';
         rates = {...baseRates};
 
-        // Повертаємо базові лейбли
         labels.ds.textContent = `📦 Збирання в ДС (${baseRates.ds} грн):`;
         labels.tz.textContent = `🛒 Збирання в ТЗ (${baseRates.tz} грн):`;
         labels.move.textContent = `🔁 Переміщення товарів з ТЗ (${baseRates.move} грн):`;
@@ -323,11 +321,19 @@
       updateTotal();
     });
 
-share.addEventListener('click', ()=>{
-  const text = `💼 Мій заробіток сьогодні: ${total.textContent.split(': ')[1]} 💰\nПеревір свій тут: https://perevershnik.github.io/zp/`;
-  const url = `https://t.me/share/url?url=${encodeURIComponent('https://perevershnik.github.io/zp/')}&text=${encodeURIComponent(text)}`;
-  window.open(url, '_blank');
-});
+    share.addEventListener('click', () => {
+      const today = new Date();
+      const day = today.getDate().toString().padStart(2, '0');
+      const month = (today.getMonth()+1).toString().padStart(2, '0');
+      const year = today.getFullYear();
+      const formattedDate = `${day}.${month}.${year}`;
+
+      const earnings = total.textContent.split(': ')[1];
+      const text = `Мій заробіток (${formattedDate}) — ${earnings}`;
+
+      const url = `https://t.me/share/url?url=${encodeURIComponent('https://perevershnik.github.io/zp/')}&text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    });
   </script>
 </body>
 </html>
