@@ -1,206 +1,200 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Розрахунок ЗП</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Калькулятор зарплати</title>
 <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4b0.svg" type="image/svg+xml">
 <style>
-body {
-  font-family: "Inter", Arial, sans-serif;
-  margin: 0;
-  padding: 1rem;
-  background: radial-gradient(circle at top left, #e3f2fd, #fce4ec);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
+  /* Сброс стилей */
+  * { box-sizing: border-box; margin:0; padding:0; }
 
-.container {
-  width: 90%;
-  max-width: 400px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 20px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  padding: 1.5rem;
-  animation: fadeIn 1s ease;
-}
+  body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: linear-gradient(135deg,#64b5f6,#ba68c8);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+  .container {
+    width: 100%;
+    max-width: 400px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: background 0.3s;
+  }
 
-h1 {
-  font-size: 1.1rem;
-  text-align: center;
-  margin-bottom: 1rem;
-  color: #333;
-  letter-spacing: 0.5px;
-}
+  h1 {
+    text-align: center;
+    color: #fff;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  }
 
-label {
-  display: block;
-  margin: 0.6rem 0 0.3rem;
-  color: #333;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
+  label {
+    color: #fff;
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+    display: block;
+  }
 
-input {
-  width: 80px; /* укороченные поля */
-  padding: 0.5rem;
-  margin-bottom: 0.8rem;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.9);
-  color: #222;
-  font-size: 1rem;
-  text-align: center;
-  transition: box-shadow 0.3s ease, transform 0.2s ease;
-}
+  input {
+    width: 100%;
+    max-width: 120px;
+    padding: 0.5rem;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 0.8rem;
+    transition: transform 0.2s, box-shadow 0.3s;
+  }
 
-input:focus {
-  outline: none;
-  box-shadow: 0 0 10px rgba(100, 181, 246, 0.8);
-  transform: scale(1.02);
-}
+  input:focus {
+    outline: none;
+    transform: scale(1.05);
+    box-shadow: 0 0 12px rgba(255,255,255,0.5);
+  }
 
-.result {
-  text-align: center;
-  margin-top: 1rem;
-  font-weight: bold;
-  font-size: 1.2rem;
-  color: #222;
-  transition: all 0.3s ease;
-}
+  .result {
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    transition: transform 0.2s;
+  }
 
-.buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 0.8rem;
-}
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 
-button {
-  width: 100%;
-  padding: 0.7rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(90deg, #64b5f6, #ba68c8);
-  color: #fff;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
-}
+  button {
+    padding: 0.7rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #fff;
+    background: linear-gradient(90deg,#64b5f6,#ba68c8);
+    transition: transform 0.2s, box-shadow 0.3s;
+  }
 
-button:hover {
-  transform: scale(1.03);
-  box-shadow: 0 0 10px rgba(100, 181, 246, 0.5);
-}
+  button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 12px rgba(255,255,255,0.4);
+  }
 
-button:active {
-  transform: scale(0.97);
-}
+  .footer {
+    text-align: center;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.6);
+    margin-top: 1rem;
+  }
 
-.footer {
-  margin-top: 1rem;
-  font-size: 0.75rem;
-  color: rgba(0, 0, 0, 0.5);
-  text-align: center;
-  user-select: none;
-}
+  /* Тумблер */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+  }
 
-/* Тумблер */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 26px;
-  vertical-align: middle;
-}
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
 
-.switch input { 
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top:0; left:0; right:0; bottom:0;
+    background-color: rgba(255,255,255,0.4);
+    transition: 0.4s;
+    border-radius: 34px;
+  }
 
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
-  border-radius: 34px;
-}
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px; width: 20px;
+    left: 3px; bottom: 3px;
+    background-color: #fff;
+    border-radius: 50%;
+    transition: 0.4s;
+  }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 20px; width: 20px;
-  left: 3px; bottom: 3px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
-}
+  input:checked + .slider {
+    background-color: rgba(255,255,255,0.8);
+  }
 
-input:checked + .slider {
-  background-color: #64b5f6;
-}
+  input:checked + .slider:before {
+    transform: translateX(24px);
+  }
 
-input:checked + .slider:before {
-  transform: translateX(24px);
-}
+  .toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #fff;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
 
-.toggle-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-  color: #333;
-}
+  @media(max-width: 400px){
+    input { max-width: 100px; }
+  }
 </style>
 </head>
 <body>
-<div class="container">
-<h1>💼 Розрахунок зарплати</h1>
+<div class="container" id="container">
+<h1>💼 Калькулятор зарплати</h1>
 
 <label class="toggle-label">
   <span class="switch">
     <input type="checkbox" id="toggleNovachky">
-    <span class="slider round"></span>
+    <span class="slider"></span>
   </span>
   Включити тарифы для новачків
 </label>
 
 <div id="hoursContainer" style="display:none;">
   <label>🕒 Робочі години (46,72 грн/год):</label>
-  <input type="number" id="hours" value="">
+  <input type="number" id="hours">
 </div>
 
 <label id="labelDs">📦 Збирання в ДС (1,34 грн):</label>
-<input type="number" id="ds" value="">
+<input type="number" id="ds">
 
 <label id="labelTz">🛒 Збирання в ТЗ (2,69 грн):</label>
-<input type="number" id="tz" value="">
+<input type="number" id="tz">
 
 <label id="labelMove">🔁 Переміщення товарів з ТЗ (3,32 грн):</label>
-<input type="number" id="move" value="">
+<input type="number" id="move">
 
 <label id="labelPlace">📥 Розміщення товарів у ДС (1,53 грн):</label>
-<input type="number" id="place" value="">
+<input type="number" id="place">
 
 <label id="labelWeight">⚖️ Вага розміщення (0,14 грн):</label>
-<input type="number" id="weight" value="">
+<input type="number" id="weight">
 
 <label id="labelPack">🎁 Пакування замовлення (0,27 грн):</label>
-<input type="number" id="pack" value="">
+<input type="number" id="pack">
 
 <div class="result" id="total">Всього: 0 грн</div>
 
@@ -232,6 +226,7 @@ const reset = document.getElementById('reset');
 const share = document.getElementById('share');
 const toggle = document.getElementById('toggleNovachky');
 const hoursContainer = document.getElementById('hoursContainer');
+const container = document.getElementById('container');
 
 const labels = { ds: document.getElementById('labelDs'), tz: document.getElementById('labelTz'),
                  move: document.getElementById('labelMove'), place: document.getElementById('labelPlace'),
@@ -243,7 +238,7 @@ function updateTotal(){
             (rates.weight*Number(weight.value||0)) + (rates.pack*Number(pack.value||0)) +
             (Number(hours.value||0)*hourlyRate);
   total.textContent = `Всього: ${sum.toFixed(2)} грн`;
-  total.style.transform="scale(1.1)";
+  total.style.transform="scale(1.05)";
   setTimeout(()=>total.style.transform="scale(1)",150);
 }
 
@@ -253,8 +248,16 @@ function updateTotal(){
 });
 
 toggle.addEventListener('change',()=>{
-  if(toggle.checked){ hoursContainer.style.display='block'; rates={...newRates}; }
-  else{ hoursContainer.style.display='none'; hours.value=''; rates={...baseRates}; }
+  if(toggle.checked){ 
+    hoursContainer.style.display='block'; 
+    rates={...newRates}; 
+    container.style.background = "rgba(0,0,0,0.15)";
+  } else{ 
+    hoursContainer.style.display='none'; 
+    hours.value=''; 
+    rates={...baseRates};
+    container.style.background = "rgba(255,255,255,0.15)";
+  }
   updateTotal();
 });
 
