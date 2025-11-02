@@ -120,26 +120,34 @@
   <div class="container">
     <h1>💼 Розрахунок зарплати</h1>
 
-    <!-- Нова графа для годин -->
-    <label>🕒 Робочі години (46,72 грн/год):</label>
-    <input type="number" id="hours" value="">
+    <!-- Перемикач тарифів / новачки -->
+    <label style="display:flex; align-items:center; gap:0.5rem; margin-bottom:1rem;">
+      <input type="checkbox" id="toggleNovachky">
+      Включити нові тарифи / робочі години
+    </label>
 
-    <label>📦 Збирання в ДС (0,67 грн):</label>
+    <!-- Поле годин, спочатку приховане -->
+    <div id="hoursContainer" style="display:none;">
+      <label>🕒 Робочі години (46,72 грн/год):</label>
+      <input type="number" id="hours" value="">
+    </div>
+
+    <label>📦 Збирання в ДС (1,34 грн):</label>
     <input type="number" id="ds" value="">
 
-    <label>🛒 Збирання в ТЗ (1,34 грн):</label>
+    <label>🛒 Збирання в ТЗ (2,69 грн):</label>
     <input type="number" id="tz" value="">
 
-    <label>🔁 Переміщення товарів з ТЗ (1,66 грн):</label>
+    <label>🔁 Переміщення товарів з ТЗ (3,32 грн):</label>
     <input type="number" id="move" value="">
 
-    <label>📥 Розміщення товарів у ДС (0,76 грн):</label>
+    <label>📥 Розміщення товарів у ДС (1,53 грн):</label>
     <input type="number" id="place" value="">
 
-    <label>⚖️ Вага розміщення (0,07 грн):</label>
+    <label>⚖️ Вага розміщення (0,14 грн):</label>
     <input type="number" id="weight" value="">
 
-    <label>🎁 Пакування замовлення (0,14 грн):</label>
+    <label>🎁 Пакування замовлення (0,27 грн):</label>
     <input type="number" id="pack" value="">
 
     <div class="result" id="total">Всього: 0 грн</div>
@@ -156,12 +164,12 @@
 
   <script>
     const rates = {
-      ds: 0.67,
-      tz: 1.34,
-      move: 1.66,
-      place: 0.76,
-      weight: 0.07,
-      pack: 0.14
+      ds: 1.34,
+      tz: 2.69,
+      move: 3.32,
+      place: 1.53,
+      weight: 0.14,
+      pack: 0.27
     };
     const hourlyRate = 46.72;
 
@@ -179,13 +187,14 @@
         (rates.place * Number(document.getElementById('place').value || 0)) +
         (rates.weight * Number(document.getElementById('weight').value || 0)) +
         (rates.pack * Number(document.getElementById('pack').value || 0)) +
-        (hourlyRate * Number(document.getElementById('hours').value || 0)); // додаємо зарплату за години
+        (Number(document.getElementById('hours')?.value || 0) * hourlyRate);
 
       total.textContent = `Всього: ${sum.toFixed(2)} грн`;
       total.style.transform = "scale(1.1)";
       setTimeout(() => total.style.transform = "scale(1)", 150);
     }
 
+    // слухачі для всіх полів
     inputs.forEach(input => {
       input.addEventListener('input', updateTotal);
       input.addEventListener('focus', () => {
@@ -193,14 +202,45 @@
       });
     });
 
+    // слухач для поля годин
+    document.getElementById('hours').addEventListener('input', updateTotal);
+
+    // reset кнопка
     reset.addEventListener('click', () => {
       inputs.forEach(i => i.value = "");
       updateTotal();
     });
 
+    // Telegram кнопка
     share.addEventListener('click', () => {
       const text = encodeURIComponent(`💼 Мій заробіток сьогодні: ${sum.toFixed(2)} грн 💰\nПеревір свій тут: https://perevershnik.github.io/zp/`);
       window.open(`https://t.me/share?text=${text}`, '_blank');
+    });
+
+    // перемикач тарифів
+    const toggle = document.getElementById('toggleNovachky');
+    const hoursContainer = document.getElementById('hoursContainer');
+
+    toggle.addEventListener('change', () => {
+      if(toggle.checked){
+        hoursContainer.style.display = 'block';
+        rates.ds = 1.5;
+        rates.tz = 2.9;
+        rates.move = 3.5;
+        rates.place = 1.6;
+        rates.weight = 0.15;
+        rates.pack = 0.3;
+      } else {
+        hoursContainer.style.display = 'none';
+        rates.ds = 1.34;
+        rates.tz = 2.69;
+        rates.move = 3.32;
+        rates.place = 1.53;
+        rates.weight = 0.14;
+        rates.pack = 0.27;
+        document.getElementById('hours').value = '';
+      }
+      updateTotal();
     });
   </script>
 </body>
