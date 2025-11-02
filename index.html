@@ -308,16 +308,8 @@
     });
 
     reset.addEventListener('click', ()=>{
-      [ds, tz, move, place, weight, pack, hours].forEach(i=>i.value='');
-      toggle.checked = false;
-      hoursContainer.style.display='none';
-      rates = {...baseRates};
-      labels.ds.textContent = `📦 Збирання в ДС (${baseRates.ds} грн):`;
-      labels.tz.textContent = `🛒 Збирання в ТЗ (${baseRates.tz} грн):`;
-      labels.move.textContent = `🔁 Переміщення товарів з ТЗ (${baseRates.move} грн):`;
-      labels.place.textContent = `📥 Розміщення товарів у ДС (${baseRates.place} грн):`;
-      labels.weight.textContent = `⚖️ Вага розміщення (${baseRates.weight} грн):`;
-      labels.pack.textContent = `🎁 Пакування замовлення (${baseRates.pack} грн):`;
+      // Очищаем только поля ввода, тумблер остаётся как был
+      [ds, tz, move, place, weight, pack, hours].forEach(i => i.value = '');
       updateTotal();
     });
 
