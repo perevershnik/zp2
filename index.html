@@ -17,6 +17,7 @@
       justify-content: center;
       align-items: center;
     }
+
     .container {
       width: 90%;
       max-width: 400px;
@@ -28,10 +29,12 @@
       padding: 1.5rem;
       animation: fadeIn 1s ease;
     }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(15px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
     h1 {
       font-size: 1.1rem;
       text-align: center;
@@ -39,6 +42,7 @@
       color: #333;
       letter-spacing: 0.5px;
     }
+
     label {
       display: block;
       margin: 0.6rem 0 0.3rem;
@@ -46,6 +50,7 @@
       font-size: 0.9rem;
       font-weight: 500;
     }
+
     input {
       width: 100%;
       padding: 0.5rem;
@@ -58,11 +63,13 @@
       text-align: center;
       transition: box-shadow 0.3s ease, transform 0.2s ease;
     }
+
     input:focus {
       outline: none;
       box-shadow: 0 0 10px rgba(100, 181, 246, 0.8);
       transform: scale(1.02);
     }
+
     .result {
       text-align: center;
       margin-top: 1rem;
@@ -71,12 +78,14 @@
       color: #222;
       transition: all 0.3s ease;
     }
+
     .buttons {
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
       margin-top: 0.8rem;
     }
+
     button {
       width: 100%;
       padding: 0.7rem;
@@ -88,13 +97,16 @@
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.3s ease;
     }
+
     button:hover {
       transform: scale(1.03);
       box-shadow: 0 0 10px rgba(100, 181, 246, 0.5);
     }
+
     button:active {
       transform: scale(0.97);
     }
+
     .footer {
       margin-top: 1rem;
       font-size: 0.75rem;
@@ -102,44 +114,56 @@
       text-align: center;
       user-select: none;
     }
-    .switch-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1rem;
-      gap: 0.5rem;
-    }
+
+    /* Тумблер */
     .switch {
       position: relative;
       display: inline-block;
       width: 50px;
-      height: 24px;
+      height: 26px;
+      vertical-align: middle;
     }
-    .switch input { display: none; }
+
+    .switch input { 
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
     .slider {
       position: absolute;
       cursor: pointer;
       top: 0; left: 0; right: 0; bottom: 0;
       background-color: #ccc;
       transition: 0.4s;
-      border-radius: 24px;
+      border-radius: 34px;
     }
+
     .slider:before {
       position: absolute;
       content: "";
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
+      height: 20px; width: 20px;
+      left: 3px; bottom: 3px;
       background-color: white;
       transition: 0.4s;
       border-radius: 50%;
     }
+
     input:checked + .slider {
       background-color: #64b5f6;
     }
+
     input:checked + .slider:before {
-      transform: translateX(26px);
+      transform: translateX(24px);
+    }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      color: #333;
     }
   </style>
 </head>
@@ -147,34 +171,37 @@
   <div class="container">
     <h1>💼 Розрахунок зарплати</h1>
 
-    <div class="switch-container">
-      <span>Новачок</span>
-      <label class="switch">
-        <input type="checkbox" id="mode">
-        <span class="slider"></span>
-      </label>
-      <span>Досвідчений</span>
+    <!-- Тумблер -->
+    <label class="toggle-label">
+      <span class="switch">
+        <input type="checkbox" id="toggleNovachky">
+        <span class="slider round"></span>
+      </span>
+      Включити тарифи для новачків / робочі години
+    </label>
+
+    <!-- Поле годин -->
+    <div id="hoursContainer" style="display:none;">
+      <label>🕒 Робочі години (46,72 грн/год):</label>
+      <input type="number" id="hours" value="">
     </div>
 
-    <label>⏰ Робочі години (46,72 грн/год):</label>
-    <input type="number" id="hours" value="0">
-
-    <label>📦 Збирання в ДС:</label>
+    <label id="labelDs">📦 Збирання в ДС (1,34 грн):</label>
     <input type="number" id="ds" value="">
 
-    <label>🛒 Збирання в ТЗ:</label>
+    <label id="labelTz">🛒 Збирання в ТЗ (2,69 грн):</label>
     <input type="number" id="tz" value="">
 
-    <label>🔁 Переміщення товарів з ТЗ:</label>
+    <label id="labelMove">🔁 Переміщення товарів з ТЗ (3,32 грн):</label>
     <input type="number" id="move" value="">
 
-    <label>📥 Розміщення товарів у ДС:</label>
+    <label id="labelPlace">📥 Розміщення товарів у ДС (1,53 грн):</label>
     <input type="number" id="place" value="">
 
-    <label>⚖️ Вага розміщення:</label>
+    <label id="labelWeight">⚖️ Вага розміщення (0,14 грн):</label>
     <input type="number" id="weight" value="">
 
-    <label>🎁 Пакування замовлення:</label>
+    <label id="labelPack">🎁 Пакування замовлення (0,27 грн):</label>
     <input type="number" id="pack" value="">
 
     <div class="result" id="total">Всього: 0 грн</div>
@@ -186,75 +213,121 @@
   </div>
 
   <div class="footer">
-    © 2025 Аня Коза
+    © 2025 Стоцький В.В.
   </div>
 
   <script>
-    const ratesExperienced = {
+    const baseRates = {
       ds: 1.34,
       tz: 2.69,
       move: 3.32,
       place: 1.53,
       weight: 0.14,
-      pack: 0.27,
-      hour: 46.72
+      pack: 0.27
     };
 
-    const ratesNovice = {
+    const newRates = {
       ds: 0.67,
       tz: 1.34,
       move: 1.66,
       place: 0.76,
       weight: 0.07,
-      pack: 0.14,
-      hour: 46.72
+      pack: 0.14
     };
 
-    const inputs = document.querySelectorAll('input[type=number]');
+    let rates = {...baseRates};
+    const hourlyRate = 46.72;
+
+    const ds = document.getElementById('ds');
+    const tz = document.getElementById('tz');
+    const move = document.getElementById('move');
+    const place = document.getElementById('place');
+    const weight = document.getElementById('weight');
+    const pack = document.getElementById('pack');
+    const hours = document.getElementById('hours');
+
     const total = document.getElementById('total');
     const reset = document.getElementById('reset');
     const share = document.getElementById('share');
-    const mode = document.getElementById('mode');
-    let sum = 0;
+    const toggle = document.getElementById('toggleNovachky');
+    const hoursContainer = document.getElementById('hoursContainer');
 
-    function updateTotal() {
-      const rates = mode.checked ? ratesExperienced : ratesNovice;
+    const labels = {
+      ds: document.getElementById('labelDs'),
+      tz: document.getElementById('labelTz'),
+      move: document.getElementById('labelMove'),
+      place: document.getElementById('labelPlace'),
+      weight: document.getElementById('labelWeight'),
+      pack: document.getElementById('labelPack')
+    };
 
-      sum =
-        (rates.hour * Number(document.getElementById('hours').value || 0)) +
-        (rates.ds * Number(document.getElementById('ds').value || 0)) +
-        (rates.tz * Number(document.getElementById('tz').value || 0)) +
-        (rates.move * Number(document.getElementById('move').value || 0)) +
-        (rates.place * Number(document.getElementById('place').value || 0)) +
-        (rates.weight * Number(document.getElementById('weight').value || 0)) +
-        (rates.pack * Number(document.getElementById('pack').value || 0));
+    function updateTotal(){
+      let sum =
+        (rates.ds * Number(ds.value || 0)) +
+        (rates.tz * Number(tz.value || 0)) +
+        (rates.move * Number(move.value || 0)) +
+        (rates.place * Number(place.value || 0)) +
+        (rates.weight * Number(weight.value || 0)) +
+        (rates.pack * Number(pack.value || 0)) +
+        (Number(hours.value || 0) * hourlyRate);
 
       total.textContent = `Всього: ${sum.toFixed(2)} грн`;
       total.style.transform = "scale(1.1)";
       setTimeout(() => total.style.transform = "scale(1)", 150);
     }
 
-    inputs.forEach(input => {
+    [ds, tz, move, place, weight, pack, hours].forEach(input=>{
       input.addEventListener('input', updateTotal);
-      input.addEventListener('focus', () => {
-        if (input.value === "0") input.value = "";
-      });
+      input.addEventListener('focus', ()=>{ if(input.value==='0') input.value=''; });
     });
 
-    mode.addEventListener('change', updateTotal);
+    toggle.addEventListener('change', ()=>{
+      if(toggle.checked){
+        hoursContainer.style.display = 'block';
+        rates = {...newRates};
 
-    reset.addEventListener('click', () => {
-      inputs.forEach(i => i.value = "");
+        // Оновлюємо лейбли для новачків
+        labels.ds.textContent = `📦 Збирання в ДС (${newRates.ds} грн):`;
+        labels.tz.textContent = `🛒 Збирання в ТЗ (${newRates.tz} грн):`;
+        labels.move.textContent = `🔁 Переміщення товарів з ТЗ (${newRates.move} грн):`;
+        labels.place.textContent = `📥 Розміщення товарів у ДС (${newRates.place} грн):`;
+        labels.weight.textContent = `⚖️ Вага розміщення (${newRates.weight} грн):`;
+        labels.pack.textContent = `🎁 Пакування замовлення (${newRates.pack} грн):`;
+      } else {
+        hoursContainer.style.display = 'none';
+        hours.value = '';
+        rates = {...baseRates};
+
+        // Повертаємо базові лейбли
+        labels.ds.textContent = `📦 Збирання в ДС (${baseRates.ds} грн):`;
+        labels.tz.textContent = `🛒 Збирання в ТЗ (${baseRates.tz} грн):`;
+        labels.move.textContent = `🔁 Переміщення товарів з ТЗ (${baseRates.move} грн):`;
+        labels.place.textContent = `📥 Розміщення товарів у ДС (${baseRates.place} грн):`;
+        labels.weight.textContent = `⚖️ Вага розміщення (${baseRates.weight} грн):`;
+        labels.pack.textContent = `🎁 Пакування замовлення (${baseRates.pack} грн):`;
+      }
       updateTotal();
     });
 
-    share.addEventListener('click', () => {
-      const text = `💼 Мій заробіток сьогодні: ${total.textContent.split(': ')[1]} 💰\nПеревір свій тут: https://perevershnik.github.io/zp/`;
-      const url = `https://t.me/share?text=${encodeURIComponent(text)}`;
-      window.open(url, '_blank');
+    reset.addEventListener('click', ()=>{
+      [ds, tz, move, place, weight, pack, hours].forEach(i=>i.value='');
+      toggle.checked = false;
+      hoursContainer.style.display='none';
+      rates = {...baseRates};
+      labels.ds.textContent = `📦 Збирання в ДС (${baseRates.ds} грн):`;
+      labels.tz.textContent = `🛒 Збирання в ТЗ (${baseRates.tz} грн):`;
+      labels.move.textContent = `🔁 Переміщення товарів з ТЗ (${baseRates.move} грн):`;
+      labels.place.textContent = `📥 Розміщення товарів у ДС (${baseRates.place} грн):`;
+      labels.weight.textContent = `⚖️ Вага розміщення (${baseRates.weight} грн):`;
+      labels.pack.textContent = `🎁 Пакування замовлення (${baseRates.pack} грн):`;
+      updateTotal();
     });
 
-    updateTotal();
+share.addEventListener('click', ()=>{
+  const text = `💼 Мій заробіток сьогодні: ${total.textContent.split(': ')[1]} 💰\nПеревір свій тут: https://perevershnik.github.io/zp/`;
+  const url = `https://t.me/share/url?url=${encodeURIComponent('https://perevershnik.github.io/zp/')}&text=${encodeURIComponent(text)}`;
+  window.open(url, '_blank');
+});
   </script>
 </body>
 </html>
