@@ -325,7 +325,7 @@
 
 share.addEventListener('click', ()=>{
   const text = `💼 Мій заробіток сьогодні: ${total.textContent.split(': ')[1]} 💰\nПеревір свій тут: https://perevershnik.github.io/zp/`;
-  const url = `https://t.me/share?text=${encodeURIComponent(text)}`;
+  const url = `https://t.me/share/url?url=${encodeURIComponent('https://perevershnik.github.io/zp/')}&text=${encodeURIComponent(text)}`;
   window.open(url, '_blank');
 });
   </script>
