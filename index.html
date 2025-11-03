@@ -68,10 +68,9 @@ label {
   margin-bottom: 0.5rem;
 }
 
-input, select {
-  display:block;
-  width:60%;
-  box-sizing:border-box;
+.input-row input {
+  flex: 1 1 0; /* растягивается на доступное место */
+  max-width: 250px;
   padding:0.5rem;
   border:1px solid rgba(0,0,0,0.2);
   border-radius:10px;
@@ -82,17 +81,17 @@ input, select {
   transition:box-shadow 0.3s ease, transform 0.2s ease;
 }
 
-input:focus, select:focus {
+.input-row .small-sum {
+  width:70px;
+  text-align:right;
+  font-size:0.8rem;
+  color: rgba(0,0,0,0.4);
+}
+
+input:focus {
   outline:none;
   box-shadow:0 0 10px rgba(100,181,246,0.8);
   transform:scale(1.02);
-}
-
-.small-sum {
-  font-size:0.8rem;
-  color: rgba(0,0,0,0.4);
-  width:30%;
-  text-align:right;
 }
 
 .result {
@@ -272,9 +271,6 @@ hours=document.getElementById('hours'), total=document.getElementById('total'),
 reset=document.getElementById('reset'), share=document.getElementById('share'),
 toggle=document.getElementById('toggleNovachky'), hoursContainer=document.getElementById('hoursContainer');
 
-const labels={ds:document.getElementById('labelDs'), tz:document.getElementById('labelTz'), move:document.getElementById('labelMove'),
-place:document.getElementById('labelPlace'), weight:document.getElementById('labelWeight'), pack:document.getElementById('labelPack')};
-
 function updateTotal(){
   const valDs = Number(ds.value||0);
   const valTz = Number(tz.value||0);
@@ -307,31 +303,15 @@ toggle.addEventListener('change', ()=>{
   if(toggle.checked){
     hoursContainer.style.display='block';
     rates={...newRates};
-    labels.ds.textContent=`📦 Збирання в ДС (${newRates.ds} грн):`;
-    labels.tz.textContent=`🛒 Збирання в ТЗ (${newRates.tz} грн):`;
-    labels.move.textContent=`🔁 Переміщення товарів з ТЗ (${newRates.move} грн):`;
-    labels.place.textContent=`📥 Розміщення товарів у ДС (${newRates.place} грн):`;
-    labels.weight.textContent=`⚖️ Вага розміщення (${newRates.weight} грн):`;
-    labels.pack.textContent=`🎁 Пакування замовлення (${newRates.pack} грн):`;
   } else {
     hoursContainer.style.display='none';
     hours.value='';
     rates={...baseRates};
-    labels.ds.textContent=`📦 Збирання в ДС (${baseRates.ds} грн):`;
-    labels.tz.textContent=`🛒 Збирання в ТЗ (${baseRates.tz} грн):`;
-    labels.move.textContent=`🔁 Переміщення товарів з ТЗ (${baseRates.move} грн):`;
-    labels.place.textContent=`📥 Розміщення товарів у ДС (${baseRates.place} грн):`;
-    labels.weight.textContent=`⚖️ Вага розміщення (${baseRates.weight} грн):`;
-    labels.pack.textContent=`🎁 Пакування замовлення (${baseRates.pack} грн):`;
   }
   updateTotal();
 });
 
-reset.addEventListener('click',()=>{
-  [ds,tz,move,place,weight,pack,hours].forEach(i=>i.value='');
-  updateTotal();
-});
-
+reset.addEventListener('click',()=>{[ds,tz,move,place,weight,pack,hours].forEach(i=>i.value=''); updateTotal();});
 share.addEventListener('click',()=>{
   const today=new Date();
   const d=today.getDate().toString().padStart(2,'0'),m=(today.getMonth()+1).toString().padStart(2,'0'),y=today.getFullYear();
