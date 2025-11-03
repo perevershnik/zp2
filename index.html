@@ -267,15 +267,6 @@ share.addEventListener('click',()=>{
   window.open(url,'_blank');
 });
 
-// === Автопідрахунок пакування як ДС + ТЗ ===
-pack.addEventListener('click', () => {
-  const wantCalc = confirm("Хочеш автоматично порахувати Пакування як суму ДС + ТЗ?");
-  if (wantCalc) {
-    pack.value = Number(ds.value || 0) + Number(tz.value || 0);
-    updateTotal();
-  }
-});
-
 // ===== QR =====
 const qrData = {};
 for (let s = 1; s <= 85; s++) {
