@@ -23,7 +23,7 @@ body {
 .menu, .container {
   width:90%;
   max-width:400px;
-  background:rgba(255,255,255,0.7);
+  background:rgba(255,255,255,0.8);
   border-radius:20px;
   box-shadow:0 4px 30px rgba(0,0,0,0.1);
   backdrop-filter:blur(10px);
@@ -57,18 +57,20 @@ label {
   color:#333;
   font-size:0.9rem;
   font-weight:500;
+  text-align:center;
 }
 
 .input-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
 
 input, select {
   display:block;
-  width:65%;
+  width:60%;
   box-sizing:border-box;
   padding:0.5rem;
   border:1px solid rgba(0,0,0,0.2);
@@ -143,6 +145,7 @@ input:checked + .slider:before { transform: translateX(24px); }
   display:flex;
   align-items:center;
   gap:0.5rem;
+  justify-content:center;
   margin-bottom:1rem;
   font-size:0.9rem;
   color:#333;
@@ -248,7 +251,6 @@ input:checked + .slider:before { transform: translateX(24px); }
 
 <div class="footer">Version 1.1 © 2025 Стоцький В.В.</div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 <script>
 // ===== Меню =====
 const menu=document.getElementById('menu');
@@ -282,13 +284,13 @@ function updateTotal(){
   const valPack = Number(pack.value||0);
   const valHours = Number(hours.value||0);
 
-  document.getElementById('sumDs').textContent = (valDs*rates.ds).toFixed(2)+" грн";
-  document.getElementById('sumTz').textContent = (valTz*rates.tz).toFixed(2)+" грн";
-  document.getElementById('sumMove').textContent = (valMove*rates.move).toFixed(2)+" грн";
-  document.getElementById('sumPlace').textContent = (valPlace*rates.place).toFixed(2)+" грн";
-  document.getElementById('sumWeight').textContent = (valWeight*rates.weight).toFixed(2)+" грн";
-  document.getElementById('sumPack').textContent = (valPack*rates.pack).toFixed(2)+" грн";
-  document.getElementById('sumHours').textContent = (valHours*hourlyRate).toFixed(2)+" грн";
+  document.getElementById('sumDs').textContent = valDs ? (valDs*rates.ds).toFixed(2)+" грн" : "";
+  document.getElementById('sumTz').textContent = valTz ? (valTz*rates.tz).toFixed(2)+" грн" : "";
+  document.getElementById('sumMove').textContent = valMove ? (valMove*rates.move).toFixed(2)+" грн" : "";
+  document.getElementById('sumPlace').textContent = valPlace ? (valPlace*rates.place).toFixed(2)+" грн" : "";
+  document.getElementById('sumWeight').textContent = valWeight ? (valWeight*rates.weight).toFixed(2)+" грн" : "";
+  document.getElementById('sumPack').textContent = valPack ? (valPack*rates.pack).toFixed(2)+" грн" : "";
+  document.getElementById('sumHours').textContent = valHours ? (valHours*hourlyRate).toFixed(2)+" грн" : "";
 
   let sum=(valDs*rates.ds)+(valTz*rates.tz)+(valMove*rates.move)+(valPlace*rates.place)+(valWeight*rates.weight)+(valPack*rates.pack)+(valHours*hourlyRate);
   total.textContent=`Всього: ${sum.toFixed(2)} грн`;
