@@ -23,7 +23,7 @@ body {
 .menu, .container {
   width:90%;
   max-width:400px;
-  background:rgba(255,255,255,0.8);
+  background:rgba(255,255,255,0.7);
   border-radius:20px;
   box-shadow:0 4px 30px rgba(0,0,0,0.1);
   backdrop-filter:blur(10px);
@@ -57,21 +57,14 @@ label {
   color:#333;
   font-size:0.9rem;
   font-weight:500;
-  text-align:center;
 }
 
-.input-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.input-row input {
-  flex: 1 1 0; /* растягивается на доступное место */
-  max-width: 250px;
+input, select {
+  display:block;
+  width:100%;
+  box-sizing:border-box;
   padding:0.5rem;
+  margin-bottom:0.8rem;
   border:1px solid rgba(0,0,0,0.2);
   border-radius:10px;
   background:rgba(255,255,255,0.9);
@@ -80,15 +73,7 @@ label {
   text-align:center;
   transition:box-shadow 0.3s ease, transform 0.2s ease;
 }
-
-.input-row .small-sum {
-  width:70px;
-  text-align:right;
-  font-size:0.8rem;
-  color: rgba(0,0,0,0.4);
-}
-
-input:focus {
+input:focus, select:focus {
   outline:none;
   box-shadow:0 0 10px rgba(100,181,246,0.8);
   transform:scale(1.02);
@@ -144,7 +129,6 @@ input:checked + .slider:before { transform: translateX(24px); }
   display:flex;
   align-items:center;
   gap:0.5rem;
-  justify-content:center;
   margin-bottom:1rem;
   font-size:0.9rem;
   color:#333;
@@ -174,53 +158,17 @@ input:checked + .slider:before { transform: translateX(24px); }
     </span>
     Включити тарифы для новачків
   </label>
-
   <div id="hoursContainer" style="display:none;">
     <label>🕒 Робочі години (46,72 грн/год):</label>
-    <div class="input-row">
-      <input type="number" id="hours" value="">
-      <span class="small-sum" id="sumHours"></span>
-    </div>
+    <input type="number" id="hours" value="">
   </div>
-
-  <label id="labelDs">📦 Збирання в ДС (1,34 грн):</label>
-  <div class="input-row">
-    <input type="number" id="ds" value="">
-    <span class="small-sum" id="sumDs"></span>
-  </div>
-
-  <label id="labelTz">🛒 Збирання в ТЗ (2,69 грн):</label>
-  <div class="input-row">
-    <input type="number" id="tz" value="">
-    <span class="small-sum" id="sumTz"></span>
-  </div>
-
-  <label id="labelMove">🔁 Переміщення товарів з ТЗ (3,32 грн):</label>
-  <div class="input-row">
-    <input type="number" id="move" value="">
-    <span class="small-sum" id="sumMove"></span>
-  </div>
-
-  <label id="labelPlace">📥 Розміщення товарів у ДС (1,53 грн):</label>
-  <div class="input-row">
-    <input type="number" id="place" value="">
-    <span class="small-sum" id="sumPlace"></span>
-  </div>
-
-  <label id="labelWeight">⚖️ Вага розміщення (0,14 грн):</label>
-  <div class="input-row">
-    <input type="number" id="weight" value="">
-    <span class="small-sum" id="sumWeight"></span>
-  </div>
-
-  <label id="labelPack">🎁 Пакування замовлення (0,27 грн):</label>
-  <div class="input-row">
-    <input type="number" id="pack" value="">
-    <span class="small-sum" id="sumPack"></span>
-  </div>
-
+  <label id="labelDs">📦 Збирання в ДС (1,34 грн):</label><input type="number" id="ds" value="">
+  <label id="labelTz">🛒 Збирання в ТЗ (2,69 грн):</label><input type="number" id="tz" value="">
+  <label id="labelMove">🔁 Переміщення товарів з ТЗ (3,32 грн):</label><input type="number" id="move" value="">
+  <label id="labelPlace">📥 Розміщення товарів у ДС (1,53 грн):</label><input type="number" id="place" value="">
+  <label id="labelWeight">⚖️ Вага розміщення (0,14 грн):</label><input type="number" id="weight" value="">
+  <label id="labelPack">🎁 Пакування замовлення (0,27 грн):</label><input type="number" id="pack" value="">
   <div class="result" id="total">Всього: 0 грн</div>
-
   <div class="buttons">
     <button class="calc-btn" id="reset">🧹 Очистити все</button>
     <button class="calc-btn" id="share">📤 Поділитись у Telegram</button>
@@ -250,6 +198,7 @@ input:checked + .slider:before { transform: translateX(24px); }
 
 <div class="footer">Version 1.1 © 2025 Стоцький В.В.</div>
 
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 <script>
 // ===== Меню =====
 const menu=document.getElementById('menu');
@@ -270,25 +219,11 @@ place=document.getElementById('place'), weight=document.getElementById('weight')
 hours=document.getElementById('hours'), total=document.getElementById('total'),
 reset=document.getElementById('reset'), share=document.getElementById('share'),
 toggle=document.getElementById('toggleNovachky'), hoursContainer=document.getElementById('hoursContainer');
+const labels={ds:document.getElementById('labelDs'), tz:document.getElementById('labelTz'), move:document.getElementById('labelMove'),
+place:document.getElementById('labelPlace'), weight:document.getElementById('labelWeight'), pack:document.getElementById('labelPack')};
 
 function updateTotal(){
-  const valDs = Number(ds.value||0);
-  const valTz = Number(tz.value||0);
-  const valMove = Number(move.value||0);
-  const valPlace = Number(place.value||0);
-  const valWeight = Number(weight.value||0);
-  const valPack = Number(pack.value||0);
-  const valHours = Number(hours.value||0);
-
-  document.getElementById('sumDs').textContent = valDs ? (valDs*rates.ds).toFixed(2)+" грн" : "";
-  document.getElementById('sumTz').textContent = valTz ? (valTz*rates.tz).toFixed(2)+" грн" : "";
-  document.getElementById('sumMove').textContent = valMove ? (valMove*rates.move).toFixed(2)+" грн" : "";
-  document.getElementById('sumPlace').textContent = valPlace ? (valPlace*rates.place).toFixed(2)+" грн" : "";
-  document.getElementById('sumWeight').textContent = valWeight ? (valWeight*rates.weight).toFixed(2)+" грн" : "";
-  document.getElementById('sumPack').textContent = valPack ? (valPack*rates.pack).toFixed(2)+" грн" : "";
-  document.getElementById('sumHours').textContent = valHours ? (valHours*hourlyRate).toFixed(2)+" грн" : "";
-
-  let sum=(valDs*rates.ds)+(valTz*rates.tz)+(valMove*rates.move)+(valPlace*rates.place)+(valWeight*rates.weight)+(valPack*rates.pack)+(valHours*hourlyRate);
+  let sum=(rates.ds*Number(ds.value||0))+(rates.tz*Number(tz.value||0))+(rates.move*Number(move.value||0))+(rates.place*Number(place.value||0))+(rates.weight*Number(weight.value||0))+(rates.pack*Number(pack.value||0))+(Number(hours.value||0)*hourlyRate);
   total.textContent=`Всього: ${sum.toFixed(2)} грн`;
   total.style.transform="scale(1.1)";
   setTimeout(()=>total.style.transform="scale(1)",150);
@@ -303,10 +238,22 @@ toggle.addEventListener('change', ()=>{
   if(toggle.checked){
     hoursContainer.style.display='block';
     rates={...newRates};
+    labels.ds.textContent=`📦 Збирання в ДС (${newRates.ds} грн):`;
+    labels.tz.textContent=`🛒 Збирання в ТЗ (${newRates.tz} грн):`;
+    labels.move.textContent=`🔁 Переміщення товарів з ТЗ (${newRates.move} грн):`;
+    labels.place.textContent=`📥 Розміщення товарів у ДС (${newRates.place} грн):`;
+    labels.weight.textContent=`⚖️ Вага розміщення (${newRates.weight} грн):`;
+    labels.pack.textContent=`🎁 Пакування замовлення (${newRates.pack} грн):`;
   } else {
     hoursContainer.style.display='none';
     hours.value='';
     rates={...baseRates};
+    labels.ds.textContent=`📦 Збирання в ДС (${baseRates.ds} грн):`;
+    labels.tz.textContent=`🛒 Збирання в ТЗ (${baseRates.tz} грн):`;
+    labels.move.textContent=`🔁 Переміщення товарів з ТЗ (${baseRates.move} грн):`;
+    labels.place.textContent=`📥 Розміщення товарів у ДС (${baseRates.place} грн):`;
+    labels.weight.textContent=`⚖️ Вага розміщення (${baseRates.weight} грн):`;
+    labels.pack.textContent=`🎁 Пакування замовлення (${baseRates.pack} грн):`;
   }
   updateTotal();
 });
@@ -345,6 +292,7 @@ function fillSelect(filter=""){
 }
 fillSelect();
 
+// обмеження вводу + очистка
 searchCell.addEventListener('input', e => {
   e.target.value = e.target.value.replace(/[^0-9\-]/g, '');
   fillSelect(e.target.value);
