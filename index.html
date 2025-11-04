@@ -284,7 +284,11 @@ const labels={ds:get('labelDs'),tz:get('labelTz'),move:get('labelMove'),place:ge
 
 function updateTotal(){
   const vals={ds:+ds.value||0,tz:+tz.value||0,move:+move.value||0,place:+place.value||0,weight:+weight.value||0,pack:+pack.value||0,hours:+hours.value||0};
-  if(!pack.dataset.manual){ vals.pack=vals.ds+vals.tz; pack.value=vals.pack; }
+  if(!pack.dataset.manual){ 
+    vals.pack=vals.ds+vals.tz; 
+    if(vals.pack>0){ pack.value=vals.pack; } 
+    else if(!pack.dataset.manual) { pack.value=''; }
+  }
   const sumVals={
     ds:vals.ds*rates.ds, tz:vals.tz*rates.tz, move:vals.move*rates.move,
     place:vals.place*rates.place, weight:vals.weight*rates.weight, pack:vals.pack*rates.pack,
@@ -325,7 +329,14 @@ toggle.onchange=()=>{
   updateTotal();
 };
 
-get('reset').onclick=()=>{fields.forEach(f=>{get(f).value=''; delete pack.dataset.manual;}); updateTotal();};
+get('reset').onclick=()=>{
+  fields.forEach(f=>{
+    get(f).value='';
+    delete pack.dataset.manual;
+  });
+  updateTotal();
+};
+
 get('share').onclick=()=>{
   const d=new Date();
   const date=`${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')}.${d.getFullYear()}`;
