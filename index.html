@@ -34,6 +34,11 @@ body {
 }
 .menu h1, .container h1 { margin-bottom:1rem; color:#333; }
 
+/* 🔹 увеличиваем только заголовок в калькуляторе */
+#calculator h1 {
+  font-size: 1rem;
+}
+
 .menu button, .calc-btn {
   width:100%;
   padding:0.7rem;
@@ -292,7 +297,6 @@ function fillSelect(filter=""){
 }
 fillSelect();
 
-// обмеження вводу + очистка
 searchCell.addEventListener('input', e => {
   e.target.value = e.target.value.replace(/[^0-9\-]/g, '');
   fillSelect(e.target.value);
