@@ -1,11 +1,57 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>МЕНЮ</title>
-<link rel="stylesheet" href="style.css">
-<link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4b0.svg" type="image/svg+xml">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>МЕНЮ</title>
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4b0.svg" type="image/svg+xml">
+  <style>
+    body {
+      font-family: "Inter", Arial, sans-serif;
+      margin: 0;
+      padding: 1rem;
+      background: radial-gradient(circle at top left, #e3f2fd, #fce4ec);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .menu {
+      width: 90%;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 20px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 1.5rem;
+      text-align: center;
+      animation: fadeIn 1s ease;
+    }
+    h1 { margin-bottom: 1rem; color: #333; }
+    button {
+      width: 100%;
+      padding: 0.7rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #64b5f6, #ba68c8);
+      color: #fff;
+      cursor: pointer;
+      margin-bottom: 0.6rem;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+    button:hover { transform: scale(1.03); box-shadow: 0 0 10px rgba(100,181,246,0.5); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px);} to { opacity: 1; transform: translateY(0);} }
+    .footer {
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      color: rgba(0, 0, 0, 0.5);
+      text-align: center;
+      user-select: none;
+    }
+  </style>
 </head>
 <body>
   <div class="menu">
