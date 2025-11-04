@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR-коди комірок</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>📱 QR-коди комірок</h1>
+
+    <label>Пошук комірки:</label>
+    <div style="display:flex; gap:0.5rem; align-items:center;">
+      <input type="text" id="searchCell" placeholder="Наприклад: 71-3" style="flex:1;">
+      <button class="calc-btn" id="clearSearch" style="width:auto; padding:0.5rem 1rem;">🧹</button>
+    </div>
+
+    <label>Виберіть комірку:</label>
+    <select id="cellSelect" size="8"></select>
+
+    <div id="qrContainer"></div>
+
+    <div class="buttons">
+      <button class="calc-btn" onclick="window.location.href='index.html'">⬅️ Повернутись у меню</button>
+    </div>
+  </div>
+
+  <div class="footer">Version 1.1 © 2025 Стоцький В.В.</div>
+
+  <script>
+  const qrData={};
+  for(let s=1;s<=85;s++){for(let p=1;p<=6;p++){qrData[`${s}-${p}`]="";}}
+  qrData["1-1"]="187d9487-bc1a-4d1e-979c-e1f66c017a16";
+
+  const cellSelect=document.getElementById('cellSelect');
+  const searchCell=document.getElementById('searchCell');
+  const qrContainer=document.getElementById('qrContainer');
+
+  function fillSelect(filter=""){
+    cellSelect.innerHTML='';
+    for(let key in qrData){
+      if(key.toLowerCase().includes(filter.toLowerCase())){
+        const opt=document.createElement('option');
+        opt.value=key;
+        opt.textContent=key;
+        cellSelect.appendChild(opt);
+      }
+    }
+  }
+  fillSelect();
+
+  searchCell.addEventListener('input',e=>{
+    e.target.value=e.target.value.replace(/[^0-9\-]/g,'');
+    fillSelect(e.target.value);
+  });
+
+  document.getElementById('clearSearch').addEventListener('click',()=>{
+    searchCell.value=''; fillSelect(); searchCell.focus();
+  });
+
+  cellSelect.addEventListener('change',()=>{
+    qrContainer.innerHTML='';
+    const selected=cellSelect.value;
+    if(selected){
+      const data=qrData[selected];
+      if(!data){
+        const p=document.createElement('p');
+        p.textContent='🔔 Для цієї комірки значення ще не задано.';
+        p.style.color='rgba(0,0,0,0.6)';
+        qrContainer.appendChild(p);
+      } else {
+        new QRCode(qrContainer,{text:data,width:200,height:200});
+      }
+    }
+  });
+  </script>
+</body>
+</html>
