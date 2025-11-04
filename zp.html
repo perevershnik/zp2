@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Розрахунок зарплати</title>
-  <link rel="stylesheet" href="style.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -61,9 +60,6 @@
     #reset:hover { background: #ccc; }
     #share { background: #0088cc; color: white; }
     #share:hover { background: #0077b6; }
-    #toggleNovachky {
-      margin-right: 6px;
-    }
     .toggle-line {
       margin-top: 16px;
       display: flex;
@@ -78,10 +74,11 @@
       width: auto;
       padding: 6px 12px;
       margin-bottom: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
     }
-    #hoursContainer {
-      display: none;
-    }
+    #hoursContainer { display: none; }
   </style>
 </head>
 <body>
@@ -158,9 +155,8 @@
       pack:document.getElementById('sumPack')
     };
 
-    let manualPack = false; // если пользователь вручную редактировал "Пакування"
+    let manualPack = false;
 
-    // ===== Функция пересчёта =====
     function updateTotal(){
       if(!manualPack){
         pack.value = Number(ds.value||0) + Number(tz.value||0);
@@ -176,63 +172,31 @@
         hours: Number(hours.value||0) * hourlyRate
       };
 
-      sumElems.ds.textContent = sums.ds ? `= ${sums.ds.toFixed(2)} грн` : '';
-      sumElems.tz.textContent = sums.tz ? `= ${sums.tz.toFixed(2)} грн` : '';
-      sumElems.move.textContent = sums.move ? `= ${sums.move.toFixed(2)} грн` : '';
-      sumElems.place.textContent = sums.place ? `= ${sums.place.toFixed(2)} грн` : '';
-      sumElems.weight.textContent = sums.weight ? `= ${sums.weight.toFixed(2)} грн` : '';
-      sumElems.pack.textContent = sums.pack ? `= ${sums.pack.toFixed(2)} грн` : '';
+      for (let key in sumElems) {
+        sumElems[key].textContent = sums[key] ? `= ${sums[key].toFixed(2)} грн` : '';
+      }
 
       const totalSum = Object.values(sums).reduce((a,b)=>a+b,0);
       total.textContent = `Всього: ${totalSum.toFixed(2)} грн`;
     }
 
-    // ===== События =====
-    [ds,tz,move,place,weight,pack,hours].forEach(i=>{
-      i.addEventListener('input',updateTotal);
-    });
-
-    pack.addEventListener('input',()=>{
-      manualPack = true;
-      updateTotal();
-    });
-
-    pack.addEventListener('focus',()=>{
-      if(pack.value===''){
-        manualPack = false;
-        updateTotal();
-      }
-    });
-
+    [ds,tz,move,place,weight,pack,hours].forEach(i=>i.addEventListener('input',updateTotal));
+    pack.addEventListener('input',()=>{manualPack=true;updateTotal();});
     toggle.addEventListener('change',()=>{
-      if(toggle.checked){
-        hoursContainer.style.display='block';
-        rates={...newRates};
-      } else {
-        hoursContainer.style.display='none';
-        hours.value='';
-        rates={...baseRates};
-      }
+      rates = toggle.checked ? {...newRates} : {...baseRates};
+      hoursContainer.style.display = toggle.checked ? 'block' : 'none';
+      if(!toggle.checked) hours.value='';
       updateTotal();
     });
-
-    reset.addEventListener('click',()=>{
-      [ds,tz,move,place,weight,pack,hours].forEach(i=>i.value='');
-      manualPack=false;
-      updateTotal();
-    });
-
+    reset.addEventListener('click',()=>{[ds,tz,move,place,weight,pack,hours].forEach(i=>i.value='');manualPack=false;updateTotal();});
     share.addEventListener('click',()=>{
-      const today=new Date();
-      const d=today.getDate().toString().padStart(2,'0'),
-            m=(today.getMonth()+1).toString().padStart(2,'0'),
-            y=today.getFullYear();
+      const today=new Date(),d=today.getDate().toString().padStart(2,'0'),m=(today.getMonth()+1).toString().padStart(2,'0'),y=today.getFullYear();
       const text=`Мій заробіток (${d}.${m}.${y}) — ${total.textContent.split(': ')[1]}\nПеревір свій результат тут: https://perevershnik.github.io/zp/`;
       const url=`https://t.me/share/url?url=&text=${encodeURIComponent(text)}`;
       window.open(url,'_blank');
     });
 
-    updateTotal(); // начальный пересчёт
+    updateTotal();
   </script>
 </body>
 </html>
