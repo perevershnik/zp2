@@ -32,8 +32,11 @@ body {
   animation:fadeIn 1s ease;
   text-align:center;
 }
-.menu h1, .container h1 { margin-bottom:1rem; color:#333; }
-#calculator h1 { font-size:1.6rem; }
+.menu h1, .container h1 { 
+  margin-bottom:1rem; 
+  color:#333; 
+  font-size:1.4rem;
+}
 
 .menu button, .calc-btn {
   width:100%;
@@ -58,19 +61,21 @@ label {
   color:#333;
   font-size:0.9rem;
   font-weight:500;
-  text-align:left;
 }
+
 .input-row {
-  position:relative;
   display:flex;
   align-items:center;
+  justify-content:space-between;
+  gap:0.5rem;
 }
+
 input, select {
   display:block;
   width:100%;
   box-sizing:border-box;
   padding:0.5rem;
-  margin-bottom:0.8rem;
+  margin-bottom:0.3rem;
   border:1px solid rgba(0,0,0,0.2);
   border-radius:10px;
   background:rgba(255,255,255,0.9);
@@ -84,12 +89,12 @@ input:focus, select:focus {
   box-shadow:0 0 10px rgba(100,181,246,0.8);
   transform:scale(1.02);
 }
-.sum-label {
-  position:absolute;
-  right:10px;
+
+.sumLabel {
   font-size:0.85rem;
-  color:rgba(0,0,0,0.6);
-  pointer-events:none;
+  color:rgba(0,0,0,0.5);
+  text-align:right;
+  min-width:80px;
 }
 
 .result {
@@ -146,6 +151,7 @@ input:checked + .slider:before { transform: translateX(24px); }
   font-size:0.9rem;
   color:#333;
 }
+
 #qrContainer {
   display:flex;
   flex-direction:column;
@@ -164,37 +170,40 @@ input:checked + .slider:before { transform: translateX(24px); }
 
 <div class="container hidden" id="calculator">
   <h1>💼 Розрахунок зарплати</h1>
+
   <label class="toggle-label">
     <span class="switch">
       <input type="checkbox" id="toggleNovachky">
       <span class="slider round"></span>
     </span>
-    Включити тарифы для новачків
+    Включити тарифи для новачків
   </label>
+
   <div id="hoursContainer" style="display:none;">
     <label>🕒 Робочі години (46,72 грн/год):</label>
     <div class="input-row">
-      <input type="number" id="hours" value="">
-      <span class="sum-label" id="sumHours"></span>
+      <input type="number" id="hours">
+      <span class="sumLabel" id="sumHours"></span>
     </div>
   </div>
-  <label id="labelDs">📦 Збирання в ДС (1,34 грн):</label>
-  <div class="input-row"><input type="number" id="ds" value=""><span class="sum-label" id="sumDs"></span></div>
 
-  <label id="labelTz">🛒 Збирання в ТЗ (2,69 грн):</label>
-  <div class="input-row"><input type="number" id="tz" value=""><span class="sum-label" id="sumTz"></span></div>
+  <label id="labelDs">📦 Збирання в ДС (1.34 грн):</label>
+  <div class="input-row"><input type="number" id="ds"><span class="sumLabel" id="sumDs"></span></div>
 
-  <label id="labelMove">🔁 Переміщення товарів з ТЗ (3,32 грн):</label>
-  <div class="input-row"><input type="number" id="move" value=""><span class="sum-label" id="sumMove"></span></div>
+  <label id="labelTz">🛒 Збирання в ТЗ (2.69 грн):</label>
+  <div class="input-row"><input type="number" id="tz"><span class="sumLabel" id="sumTz"></span></div>
 
-  <label id="labelPlace">📥 Розміщення товарів у ДС (1,53 грн):</label>
-  <div class="input-row"><input type="number" id="place" value=""><span class="sum-label" id="sumPlace"></span></div>
+  <label id="labelMove">🔁 Переміщення товарів з ТЗ (3.32 грн):</label>
+  <div class="input-row"><input type="number" id="move"><span class="sumLabel" id="sumMove"></span></div>
 
-  <label id="labelWeight">⚖️ Вага розміщення (0,14 грн):</label>
-  <div class="input-row"><input type="number" id="weight" value=""><span class="sum-label" id="sumWeight"></span></div>
+  <label id="labelPlace">📥 Розміщення товарів у ДС (1.53 грн):</label>
+  <div class="input-row"><input type="number" id="place"><span class="sumLabel" id="sumPlace"></span></div>
 
-  <label id="labelPack">🎁 Пакування замовлення (0,27 грн):</label>
-  <div class="input-row"><input type="number" id="pack" value=""><span class="sum-label" id="sumPack"></span></div>
+  <label id="labelWeight">⚖️ Вага розміщення (0.14 грн):</label>
+  <div class="input-row"><input type="number" id="weight"><span class="sumLabel" id="sumWeight"></span></div>
+
+  <label id="labelPack">🎁 Пакування замовлення (0.27 грн):</label>
+  <div class="input-row"><input type="number" id="pack"><span class="sumLabel" id="sumPack"></span></div>
 
   <div class="result" id="total">Всього: 0 грн</div>
   <div class="buttons">
@@ -206,184 +215,120 @@ input:checked + .slider:before { transform: translateX(24px); }
 
 <div class="container hidden" id="qrBlock">
   <h1>📱 QR-коди комірок</h1>
-  
   <label>Пошук комірки:</label>
   <div style="display:flex; gap:0.5rem; align-items:center;">
     <input type="text" id="searchCell" placeholder="Наприклад: 71-3" style="flex:1;" />
     <button class="calc-btn" id="clearSearch" style="width:auto; padding:0.5rem 1rem;">🧹</button>
   </div>
-
   <label>Виберіть комірку:</label>
   <select id="cellSelect" size="8">
     <option value="">Виберіть комірку</option>
   </select>
-
   <div id="qrContainer"></div>
   <div class="buttons">
     <button class="calc-btn" id="backQR">⬅️ Повернутись у меню</button>
   </div>
 </div>
 
-<div class="footer">Version 1.2 © 2025 Стоцький В.В.</div>
+<div class="footer">Version 1.4 © 2025 Стоцький В.В.</div>
 
 <script>
-// ===== Меню =====
 const menu=document.getElementById('menu');
 const calculator=document.getElementById('calculator');
 const qrBlock=document.getElementById('qrBlock');
-document.getElementById('btnZP').addEventListener('click',()=>{menu.classList.add('hidden');calculator.classList.remove('hidden');});
-document.getElementById('btnQR').addEventListener('click',()=>{menu.classList.add('hidden');qrBlock.classList.remove('hidden');});
-document.getElementById('back').addEventListener('click',()=>{calculator.classList.add('hidden');menu.classList.remove('hidden');});
-document.getElementById('backQR').addEventListener('click',()=>{qrBlock.classList.add('hidden');menu.classList.remove('hidden');});
+document.getElementById('btnZP').onclick=()=>{menu.classList.add('hidden');calculator.classList.remove('hidden');};
+document.getElementById('btnQR').onclick=()=>{menu.classList.add('hidden');qrBlock.classList.remove('hidden');};
+document.getElementById('back').onclick=()=>{calculator.classList.add('hidden');menu.classList.remove('hidden');};
+document.getElementById('backQR').onclick=()=>{qrBlock.classList.add('hidden');menu.classList.remove('hidden');};
 
-// ===== Калькулятор =====
+// калькулятор
 const baseRates={ds:1.34,tz:2.69,move:3.32,place:1.53,weight:0.14,pack:0.27};
 const newRates={ds:0.67,tz:1.34,move:1.66,place:0.76,weight:0.07,pack:0.14};
 let rates={...baseRates};
 const hourlyRate=46.72;
 
-const ds=document.getElementById('ds'),
-      tz=document.getElementById('tz'),
-      move=document.getElementById('move'),
-      place=document.getElementById('place'),
-      weight=document.getElementById('weight'),
-      pack=document.getElementById('pack'),
-      hours=document.getElementById('hours'),
-      total=document.getElementById('total'),
-      reset=document.getElementById('reset'),
-      share=document.getElementById('share'),
-      toggle=document.getElementById('toggleNovachky'),
-      hoursContainer=document.getElementById('hoursContainer');
+const ds=document.getElementById('ds'),tz=document.getElementById('tz'),move=document.getElementById('move'),
+place=document.getElementById('place'),weight=document.getElementById('weight'),pack=document.getElementById('pack'),
+hours=document.getElementById('hours'),total=document.getElementById('total'),reset=document.getElementById('reset'),
+share=document.getElementById('share'),toggle=document.getElementById('toggleNovachky'),
+hoursContainer=document.getElementById('hoursContainer');
 
-const sumLabels={
-  ds:document.getElementById('sumDs'),
-  tz:document.getElementById('sumTz'),
-  move:document.getElementById('sumMove'),
-  place:document.getElementById('sumPlace'),
-  weight:document.getElementById('sumWeight'),
-  pack:document.getElementById('sumPack'),
+const labels={
+  ds:document.getElementById('labelDs'),tz:document.getElementById('labelTz'),move:document.getElementById('labelMove'),
+  place:document.getElementById('labelPlace'),weight:document.getElementById('labelWeight'),pack:document.getElementById('labelPack')
+};
+const sums={
+  ds:document.getElementById('sumDs'),tz:document.getElementById('sumTz'),move:document.getElementById('sumMove'),
+  place:document.getElementById('sumPlace'),weight:document.getElementById('sumWeight'),pack:document.getElementById('sumPack'),
   hours:document.getElementById('sumHours')
 };
-
 let manualPack=false;
 
-function updateTotals(){
-  let sumDS=rates.ds*Number(ds.value||0);
-  let sumTZ=rates.tz*Number(tz.value||0);
-  let sumMove=rates.move*Number(move.value||0);
-  let sumPlace=rates.place*Number(place.value||0);
-  let sumWeight=rates.weight*Number(weight.value||0);
-  let sumHours=Number(hours.value||0)*hourlyRate;
+function updateLabels(){
+  labels.ds.textContent=`📦 Збирання в ДС (${rates.ds.toFixed(2)} грн):`;
+  labels.tz.textContent=`🛒 Збирання в ТЗ (${rates.tz.toFixed(2)} грн):`;
+  labels.move.textContent=`🔁 Переміщення товарів (${rates.move.toFixed(2)} грн):`;
+  labels.place.textContent=`📥 Розміщення (${rates.place.toFixed(2)} грн):`;
+  labels.weight.textContent=`⚖️ Вага (${rates.weight.toFixed(2)} грн):`;
+  labels.pack.textContent=`🎁 Пакування (${rates.pack.toFixed(2)} грн):`;
+}
 
-  if(!manualPack){
-    pack.value=(Number(ds.value||0)+Number(tz.value||0))||"";
-  }
+function updateTotal(){
+  if(!manualPack){ pack.value=(Number(ds.value||0)+Number(tz.value||0))||""; }
 
-  let sumPack=rates.pack*Number(pack.value||0);
+  let sum={
+    ds:rates.ds*ds.value, tz:rates.tz*tz.value, move:rates.move*move.value,
+    place:rates.place*place.value, weight:rates.weight*weight.value,
+    pack:rates.pack*pack.value, hours:hours.value*hourlyRate
+  };
 
-  sumLabels.ds.textContent=sumDS?"≈ "+sumDS.toFixed(2)+" грн":"";
-  sumLabels.tz.textContent=sumTZ?"≈ "+sumTZ.toFixed(2)+" грн":"";
-  sumLabels.move.textContent=sumMove?"≈ "+sumMove.toFixed(2)+" грн":"";
-  sumLabels.place.textContent=sumPlace?"≈ "+sumPlace.toFixed(2)+" грн":"";
-  sumLabels.weight.textContent=sumWeight?"≈ "+sumWeight.toFixed(2)+" грн":"";
-  sumLabels.pack.textContent=sumPack?"≈ "+sumPack.toFixed(2)+" грн":"";
-  sumLabels.hours.textContent=sumHours?"≈ "+sumHours.toFixed(2)+" грн":"";
-
-  let totalSum=sumDS+sumTZ+sumMove+sumPlace+sumWeight+sumPack+sumHours;
+  Object.keys(sum).forEach(k=>{sums[k].textContent=sum[k]?`≈ ${sum[k].toFixed(2)} грн`:"";});
+  let totalSum=Object.values(sum).reduce((a,b)=>a+b,0);
   total.textContent=`Всього: ${totalSum.toFixed(2)} грн`;
   total.style.transform="scale(1.1)";
   setTimeout(()=>total.style.transform="scale(1)",150);
 }
 
 [ds,tz,move,place,weight,pack,hours].forEach(i=>{
-  i.addEventListener('input', ()=>{
-    if(i===pack) manualPack=true;
-    updateTotals();
-  });
+  i.addEventListener('input',()=>{if(i===pack)manualPack=true;updateTotal();});
 });
 
-reset.addEventListener('click',()=>{
+reset.onclick=()=>{
   [ds,tz,move,place,weight,pack,hours].forEach(i=>i.value='');
-  Object.values(sumLabels).forEach(el=>el.textContent='');
-  manualPack=false;
-  updateTotals();
-});
+  Object.values(sums).forEach(s=>s.textContent='');
+  manualPack=false;updateTotal();
+};
 
-toggle.addEventListener('change',()=>{
-  if(toggle.checked){
-    hoursContainer.style.display='block';
-    rates={...newRates};
-  } else {
-    hoursContainer.style.display='none';
-    hours.value='';
-    rates={...baseRates};
-  }
-  manualPack=false;
-  updateTotals();
-});
+toggle.onchange=()=>{
+  if(toggle.checked){rates={...newRates};hoursContainer.style.display='block';}
+  else{rates={...baseRates};hoursContainer.style.display='none';hours.value='';}
+  updateLabels();updateTotal();
+};
 
-share.addEventListener('click',()=>{
-  const today=new Date();
-  const d=today.getDate().toString().padStart(2,'0');
-  const m=(today.getMonth()+1).toString().padStart(2,'0');
-  const y=today.getFullYear();
-  const text=`Мій заробіток (${d}.${m}.${y}) — ${total.textContent.split(': ')[1]}\nПеревір свій результат тут: https://perevershnik.github.io/zp/`;
-  const url=`https://t.me/share/url?url=&text=${encodeURIComponent(text)}`;
-  window.open(url,'_blank');
-});
+share.onclick=()=>{
+  const d=new Date();const text=`Мій заробіток (${d.toLocaleDateString('uk-UA')}) — ${total.textContent.split(': ')[1]}\nПеревір свій результат тут: https://perevershnik.github.io/zp/`;
+  window.open(`https://t.me/share/url?url=&text=${encodeURIComponent(text)}`,'_blank');
+};
+updateLabels();updateTotal();
 
-// ===== QR =====
-const qrData = {};
-for (let s = 1; s <= 85; s++) {
-  for (let p = 1; p <= 6; p++) {
-    qrData[`${s}-${p}`] = "";
-  }
-}
-qrData["1-1"] = "187d9487-bc1a-4d1e-979c-e1f66c017a16";
-
+// QR
+const qrData={};
+for(let s=1;s<=85;s++){for(let p=1;p<=6;p++){qrData[`${s}-${p}`]="";}}
+qrData["1-1"]="187d9487-bc1a-4d1e-979c-e1f66c017a16";
 const cellSelect=document.getElementById('cellSelect');
 const searchCell=document.getElementById('searchCell');
-
-function fillSelect(filter=""){
-  cellSelect.innerHTML='<option value="">Виберіть комірку</option>';
-  for(let key in qrData){
-    if(key.toLowerCase().includes(filter.toLowerCase())){
-      const opt=document.createElement('option');
-      opt.value=key;
-      opt.textContent=key;
-      cellSelect.appendChild(opt);
-    }
-  }
-}
+function fillSelect(filter=""){cellSelect.innerHTML='<option value="">Виберіть комірку</option>';
+for(let key in qrData){if(key.toLowerCase().includes(filter.toLowerCase())){let o=document.createElement('option');o.value=key;o.textContent=key;cellSelect.appendChild(o);}}}
 fillSelect();
-
-searchCell.addEventListener('input', e => {
-  e.target.value = e.target.value.replace(/[^0-9\-]/g, '');
-  fillSelect(e.target.value);
-});
-
-document.getElementById('clearSearch').addEventListener('click', () => {
-  searchCell.value = '';
-  fillSelect();
-  searchCell.focus();
-});
-
-cellSelect.addEventListener('change',()=>{
-  const qrContainer=document.getElementById('qrContainer');
-  qrContainer.innerHTML='';
-  const selected=cellSelect.value;
-  if(selected){
-    const data = qrData[selected] || "";
-    if(!data){
-      const p=document.createElement('p');
-      p.textContent = '🔔 Для цієї комірки значення ще не задано.';
-      p.style.color = 'rgba(0,0,0,0.6)';
-      qrContainer.appendChild(p);
-    } else {
-      new QRCode(qrContainer,{text:data,width:200,height:200});
-    }
+searchCell.oninput=e=>{e.target.value=e.target.value.replace(/[^0-9\-]/g,'');fillSelect(e.target.value);}
+document.getElementById('clearSearch').onclick=()=>{searchCell.value='';fillSelect();searchCell.focus();}
+cellSelect.onchange=()=>{
+  const qrContainer=document.getElementById('qrContainer');qrContainer.innerHTML='';
+  const selected=cellSelect.value;if(selected){
+    const data=qrData[selected]||"";if(!data){const p=document.createElement('p');p.textContent='🔔 Для цієї комірки значення ще не задано.';p.style.color='rgba(0,0,0,0.6)';qrContainer.appendChild(p);}
+    else{new QRCode(qrContainer,{text:data,width:200,height:200});}
   }
-});
+};
 </script>
 </body>
 </html>
