@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>МЕНЮ</title>
+<link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4b0.svg" type="image/svg+xml">
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+<style>
+body {
+  font-family:"Inter",Arial,sans-serif;
+  margin:0;
+  padding:1rem;
+  background:radial-gradient(circle at top left, #e3f2fd, #fce4ec);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+.hidden { display:none; }
+
+.menu, .container {
+  width:90%;
+  max-width:400px;
+  background:rgba(255,255,255,0.7);
+  border-radius:20px;
+  box-shadow:0 4px 30px rgba(0,0,0,0.1);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  padding:1.5rem;
+  animation:fadeIn 1s ease;
+  text-align:center;
+}
+.menu h1, .container h1 {
+  margin-bottom:1rem;
+  color:#333;
+  font-size:1.6rem;
+}
+
+.menu button, .calc-btn {
+  width:100%;
+  padding:0.7rem;
+  font-size:1rem;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(90deg,#64b5f6,#ba68c8);
+  color:#fff;
+  cursor:pointer;
+  margin-bottom:0.6rem;
+  transition:transform 0.2s ease, box-shadow 0.3s ease;
+}
+.menu button:hover, .calc-btn:hover {
+  transform:scale(1.03);
+  box-shadow:0 0 10px rgba(100,181,246,0.5);
+}
+.menu button:active, .calc-btn:active { transform:scale(0.97); }
+
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(15px);}
+  to { opacity:1; transform:translateY(0);}
+}
+
+label {
+  display:block;
+  margin:0.6rem 0 0.3rem;
+  color:#333;
+  font-size:0.9rem;
+  font-weight:500;
+  text-align:left;
+  width:100%;
+}
+
+.input-with-sum {
+  position:relative;
+  width:100%;
+}
+.input-with-sum input {
+  width:100%;
+  padding-right:4.5rem;
+  box-sizing:border-box;
+}
+.input-sum {
+  position:absolute;
+  right:0.8rem;
+  top:50%;
+  transform:translateY(-50%);
+  color:rgba(0,0,0,0.6);
+  font-size:0.85rem;
+  pointer-events:none;
+}
+
+input, select {
+  display:block;
+  width:100%;
+  box-sizing:border-box;
+  padding:0.5rem;
+  margin-bottom:0.8rem;
+  border:1px solid rgba(0,0,0,0.2);
+  border-radius:10px;
+  background:rgba(255,255,255,0.9);
+  color:#222;
+  font-size:1rem;
+  text-align:center;
+  transition:box-shadow 0.3s ease, transform 0.2s ease;
+}
+input:focus, select:focus {
+  outline:none;
+  box-shadow:0 0 10px rgba(100,181,246,0.8);
+  transform:scale(1.02);
+}
+
+.result {
+  text-align:center;
+  margin-top:1rem;
+  font-weight:bold;
+  font-size:1.2rem;
+  color:#222;
+  transition: all 0.3s ease;
+}
+.buttons {
+  display:flex;
+  flex-direction:column;
+  gap:0.5rem;
+  margin-top:0.8rem;
+}
+.footer {
+  margin-top:1rem;
+  font-size:0.75rem;
+  color:rgba(0,0,0,0.5);
+  text-align:center;
+  user-select:none;
+}
+
+.switch { position:relative; display:inline-block; width:50px; height:26px; vertical-align:middle; }
+.switch input { opacity:0; width:0; height:0; }
+.slider {
+  position:absolute;
+  cursor:pointer;
+  top:0; left:0; right:0; bottom:0;
+  background-color:#ccc;
+  transition:0.4s;
+  border-radius:34px;
+}
+.slider:before {
+  position:absolute;
+  content:"";
+  height:20px;
+  width:20px;
+  left:3px;
+  bottom:3px;
+  background-color:white;
+  transition:0.4s;
+  border-radius:50%;
+}
+input:checked + .slider { background-color:#64b5f6; }
+input:checked + .slider:before { transform: translateX(24px); }
+
+.toggle-label {
+  display:flex;
+  align-items:center;
+  gap:0.5rem;
+  margin-bottom:1rem;
+  font-size:0.9rem;
+  color:#333;
+}
+#qrContainer {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-top:20px;
+}
+
+/* Новый блок обновлений */
+.updates {
+  width: 90%;
+  max-width: 400px;
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  backdrop-filter: blur(8px);
+  margin-top: 1rem;
+  padding: 1rem 1.2rem;
+  animation: fadeIn 1s ease;
+  text-align: left;
+}
+.updates h2 {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+.updates ul {
+  list-style: "✨ ";
+  margin: 0;
+  padding-left: 1rem;
+  color: #444;
+  font-size: 0.9rem;
+}
+.updates li {
+  margin-bottom: 0.3rem;
+}
+#qrContainer .qr-label {display:none!important;}
+#uuidBox input, #uuidBox button {height:40px;}
+#uuidBox button {display:flex; align-items:center; justify-content:center;}
+</style>
+</head>
+<body>
+
+<!-- Меню -->
+<div class="menu" id="menu">
+  <h1>📋 МЕНЮ</h1>
+  <button id="btnZP">💼 Розрахунок зарплати</button>
+  <button id="btnQR">📱 QR-коди комірок</button>
+</div>
+
+<!-- Блок "Що нового" -->
+<div class="updates">
+  <h2>🆕 Що нового (v2.0)</h2>
+  <ul>
+    <li>Додано QR-коди для комірок</li>
+    <li>Покращено дизайн та відображення сум біля кожного поля</li>
+    <li>Пакування рахується автоматично</li>
+  </ul>
+</div>
+
+<!-- Калькулятор -->
+<div class="container hidden" id="calculator">
+  <h1>💼 Розрахунок зарплати</h1>
+  <label class="toggle-label">
+    <span class="switch">
+      <input type="checkbox" id="toggleNovachky">
+      <span class="slider round"></span>
+    </span>
+    Включити тарифы для новачків
+  </label>
+
+  <div id="hoursContainer" style="display:none;">
+    <label>🕒 Робочі години (46.72 грн/год):</label>
+    <div class="input-with-sum">
+      <input type="number" id="hours" value="">
+      <span class="input-sum" id="sum-hours">0 грн</span>
+    </div>
+  </div>
+
+  <label id="labelDs">📦 Збирання в ДС (1.34 грн):</label>
+  <div class="input-with-sum">
+    <input type="number" id="ds" value="">
+    <span class="input-sum" id="sum-ds">0 грн</span>
+  </div>
+
+  <label id="labelTz">🛒 Збирання в ТЗ (2.69 грн):</label>
+  <div class="input-with-sum">
+    <input type="number" id="tz" value="">
+    <span class="input-sum" id="sum-tz">0 грн</span>
+  </div>
+
+  <label id="labelMove">🔁 Переміщення товарів з ТЗ (3.32 грн):</label>
+  <div class="input-with-sum">
+    <input type="number" id="move" value="">
+    <span class="input-sum" id="sum-move">0 грн</span>
+  </div>
+
+  <label id="labelPlace">📥 Розміщення товарів у ДС (1.53 грн):</label>
+  <div class="input-with-sum">
+    <input type="number" id="place" value="">
+    <span class="input-sum" id="sum-place">0 грн</span>
+  </div>
+
+  <label id="labelWeight">⚖️ Вага розміщення (0.14 грн):</label>
+  <div class="input-with-sum">
+    <input type="number" id="weight" value="">
+    <span class="input-sum" id="sum-weight">0 грн</span>
+  </div>
+
+  <label id="labelPack">🎁 Пакування замовлення (0.27 грн):</label>
+  <div class="input-with-sum">
+    <input type="number" id="pack" value="">
+    <span class="input-sum" id="sum-pack">0 грн</span>
+  </div>
+
+  <div class="result" id="total">Всього: 0 грн</div>
+  <div class="buttons">
+    <button class="calc-btn" id="reset">🧹 Очистити все</button>
+    <button class="calc-btn" id="share">📤 Поділитись у Telegram</button>
+    <button class="calc-btn" id="back">⬅️ Повернутись у меню</button>
+  </div>
+</div>
+
+<!-- QR-коди -->
+<div class="container hidden" id="qrBlock">
+  <h1>📱 QR-коди комірок</h1>
+  <label>Пошук комірки:</label>
+  <div style="display:flex; gap:0.5rem; align-items:center;">
+    <input type="tel" inputmode="numeric" id="searchCell" placeholder="Наприклад: 71" style="flex:1;" />
+    <button class="calc-btn" id="clearSearch" style="width:auto; padding:0.5rem 1rem;">🧹</button>
+  </div>
+  <label>Виберіть комірку:</label>
+  <select id="cellSelect" size="8"></select>
+  <div id="qrContainer"></div>
+  <!-- UUID field + copy button -->
+  <div id="uuidBox" style="display:none; width:100%; margin-top:10px; display:flex; align-items:stretch; gap:6px; justify-content:center;">
+    <input id="uuidField" readonly style="flex:1; padding:0.4rem; border-radius:8px; border:1px solid rgba(0,0,0,0.25); background:rgba(255,255,255,0.85); text-align:center;">
+    <button id="copyUUID" style="width:42px; padding:0.4rem; border-radius:8px; border:none; background:linear-gradient(90deg,#64b5f6,#ba68c8); color:white; font-size:18px; cursor:pointer;">📋</button>
+  </div>
+
+  <div class="buttons">
+    <button class="calc-btn" id="backQR">⬅️ Повернутись у меню</button>
+  </div>
+</div>
+
+<div class="footer">Version 2.0 © 2025 Стоцький В.В.</div>
+
+<script>
+const menu=document.getElementById('menu');
+const calculator=document.getElementById('calculator');
+const qrBlock=document.getElementById('qrBlock');
+const updates=document.querySelector('.updates');
+
+document.getElementById('btnZP').onclick=()=>{
+  menu.classList.add('hidden');
+  updates.classList.add('hidden');
+  calculator.classList.remove('hidden');
+};
+document.getElementById('btnQR').onclick=()=>{
+  menu.classList.add('hidden');
+  updates.classList.add('hidden');
+  qrBlock.classList.remove('hidden');
+};
+document.getElementById('back').onclick=()=>{
+  calculator.classList.add('hidden');
+  menu.classList.remove('hidden');
+  updates.classList.remove('hidden');
+};
+document.getElementById('backQR').onclick=()=>{
+  qrBlock.classList.add('hidden');
+  menu.classList.remove('hidden');
+  updates.classList.remove('hidden');
+};
+
+const baseRates={ds:1.34,tz:2.69,move:3.32,place:1.53,weight:0.14,pack:0.27};
+const newRates={ds:0.67,tz:1.34,move:1.66,place:0.76,weight:0.07,pack:0.14};
+let rates={...baseRates};
+const hourlyRate=46.72;
+
+const fields=['ds','tz','move','place','weight','pack','hours'];
+const sums={};
+fields.forEach(f=>sums[f]=document.getElementById('sum-'+f));
+
+const get=(id)=>document.getElementById(id);
+const ds=get('ds'),tz=get('tz'),move=get('move'),place=get('place'),weight=get('weight'),pack=get('pack'),hours=get('hours');
+const total=get('total'),toggle=get('toggleNovachky'),hoursContainer=get('hoursContainer');
+const labels={ds:get('labelDs'),tz:get('labelTz'),move:get('labelMove'),place:get('labelPlace'),weight:get('labelWeight'),pack:get('labelPack')};
+
+function updateTotal(){
+  const vals={ds:+ds.value||0,tz:+tz.value||0,move:+move.value||0,place:+place.value||0,weight:+weight.value||0,pack:+pack.value||0,hours:+hours.value||0};
+  if(!pack.dataset.manual){ 
+    vals.pack=vals.ds+vals.tz; 
+    if(vals.pack>0){ pack.value=vals.pack; } 
+    else if(!pack.dataset.manual) { pack.value=''; }
+  }
+  const sumVals={
+    ds:vals.ds*rates.ds, tz:vals.tz*rates.tz, move:vals.move*rates.move,
+    place:vals.place*rates.place, weight:vals.weight*rates.weight, pack:vals.pack*rates.pack,
+    hours:vals.hours*hourlyRate
+  };
+  let totalSum=0;
+  for(let k in sumVals){sums[k].textContent=sumVals[k].toFixed(2)+' грн'; totalSum+=sumVals[k];}
+  total.textContent='Всього: '+totalSum.toFixed(2)+' грн';
+}
+
+fields.forEach(f=>{
+  const el=get(f);
+  el.oninput=()=>{ if(f==='pack'){pack.dataset.manual='1';} updateTotal(); };
+  el.onfocus=()=>{ if(el.value==='0') el.value=''; };
+});
+
+toggle.onchange=()=>{
+  if(toggle.checked){
+    hoursContainer.style.display='block';
+    rates={...newRates};
+    labels.ds.textContent=`📦 Збирання в ДС (${newRates.ds} грн):`;
+    labels.tz.textContent=`🛒 Збирання в ТЗ (${newRates.tz} грн):`;
+    labels.move.textContent=`🔁 Переміщення товарів (${newRates.move} грн):`;
+    labels.place.textContent=`📥 Розміщення у ДС (${newRates.place} грн):`;
+    labels.weight.textContent=`⚖️ Вага розміщення (${newRates.weight} грн):`;
+    labels.pack.textContent=`🎁 Пакування (${newRates.pack} грн):`;
+  } else {
+    hoursContainer.style.display='none';
+    hours.value='';
+    rates={...baseRates};
+    labels.ds.textContent=`📦 Збирання в ДС (${baseRates.ds} грн):`;
+    labels.tz.textContent=`🛒 Збирання в ТЗ (${baseRates.tz} грн):`;
+    labels.move.textContent=`🔁 Переміщення товарів (${baseRates.move} грн):`;
+    labels.place.textContent=`📥 Розміщення у ДС (${baseRates.place} грн):`;
+    labels.weight.textContent=`⚖️ Вага розміщення (${baseRates.weight} грн):`;
+    labels.pack.textContent=`🎁 Пакування (${baseRates.pack} грн):`;
+  }
+  updateTotal();
+};
+
+get('reset').onclick=()=>{
+  fields.forEach(f=>{
+    get(f).value='';
+    delete pack.dataset.manual;
+  });
+  updateTotal();
+};
+
+get('share').onclick=()=>{
+  const d=new Date();
+  const date=`${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')}.${d.getFullYear()}`;
+  const txt=`Мій заробіток (${date}) — ${total.textContent.split(': ')[1]}\nПеревір свій результат тут: https://perevershnik.github.io/zp/`;
+  window.open(`https://t.me/share/url?url=&text=${encodeURIComponent(txt)}`,'_blank');
+};
+
+const qrData={};
+for(let s=1;s<=85;s++){for(let p=1;p<=6;p++){qrData[`${s}-${p}`]="";}}
+qrData["1-1"]="187d9487-bc1a-4d1e-979c-e1f66c017a16";
+qrData["1-2"]="86466417-4d36-4343-9318-c97d49b41b59";
+qrData["1-3"]="92da7080-f2f1-409c-895a-4287198599d8";
+qrData["1-4"]="10e62305-8348-47ee-8eae-a526a9bdce05";
+qrData["1-5"]="4bc44beb-10c7-4990-af37-1e134f9bb52d";
+qrData["1-6"]="15426c88-f6d4-456d-ac66-9b5dc88efac9";
+qrData["2-1"]="13352bbf-c5de-4346-a881-a3105de36b07";
+qrData["2-2"]="86df0d34-66cc-41b5-94db-8043e8dd924a";
+qrData["2-3"]="a5a88f54-1efc-48c7-93f1-0e833173ef74";
+qrData["2-4"]="fb622c25-4878-4de8-9434-e514dc28b504";
+qrData["2-5"]="6d307633-0671-44d6-a591-0b14b137a55b";
+qrData["2-6"]="0fc83c4e-4f21-4329-8a1d-4c8cc70a454b";
+qrData["3-1"]="52715db4-ce6f-4079-833e-7cafab9e13ca";
+qrData["3-2"]="ccccbe2b-403b-4563-bc7f-71027211afbe";
+qrData["3-3"]="b822df1e-1ce6-4cca-88fb-6bb8b58bca3d";
+qrData["3-4"]="b8f84587-4806-4e88-8fc7-2f133bda5376";
+qrData["3-5"]="21b4aaf9-ddad-419a-8c33-c4ffbdf6af62";
+qrData["3-6"]="fd3a396c-7328-407b-8ca5-805bc2da6e53";
+qrData["4-1"]="fd2509ba-995f-47ca-914d-3ac301fac7e9";
+qrData["4-2"]="da276626-33bc-4776-be8c-f7e6897f9714";
+qrData["4-3"]="af7ebd88-a829-475d-ac49-5d2f7608a29f";
+qrData["4-4"]="ad980e4b-e9cf-42a9-aa3c-c7d67e925c60";
+qrData["4-5"]="c9c0f034-127b-40c5-806d-7c03a17fd667";
+qrData["4-6"]="5bfbf7b7-388e-4d84-b902-b45e0415009a";
+qrData["5-1"]="4227f716-400f-482d-bbee-8c9ed32ecc49";
+qrData["5-2"]="1e0df35c-4525-4aa3-bb20-c1490c951711";
+qrData["5-3"]="f0a16b0f-7d2a-4f4d-a0f4-e847cfd0a4fb";
+qrData["5-4"]="c5f5debd-ec37-420b-982b-8a12a6f7f918";
+qrData["5-5"]="70cafd8f-e973-4a13-9c13-6d85bdd259cb";
+qrData["5-6"]="8d40e02a-3635-4a71-9237-dde8b6d6bae2";
+qrData["6-1"]="5668eaf7-0e97-4072-8a79-dc45db31ae8a";
+qrData["6-2"]="0caf5a33-f780-4e12-8e87-6254c29f8b7f";
+qrData["6-3"]="87c95f15-da81-4b20-91be-e23a1cf3d6da";
+qrData["6-4"]="10550880-2fbe-45bf-a718-e700f6919541";
+qrData["6-5"]="fe7ce8d6-f529-498e-aca4-5e01c21030ac";
+qrData["6-6"]="b1e45a38-ae44-490c-8866-56efb22afe54";
+qrData["7-1"]="2f9ee259-ba89-4fe6-9c20-65cab9443b42";
+qrData["7-2"]="df6389f1-afe2-4078-b4db-dc5fd635d4c8";
+qrData["7-3"]="92de1cdc-beec-4e20-8fc8-e6c59ea344b6";
+qrData["7-4"]="b41412bf-f394-440f-ac12-76a7c121b5e0";
+qrData["7-5"]="48af83d3-8d1f-43fd-8192-a33d8898a822";
+qrData["7-6"]="3c6c417c-5d18-4a5d-bdfe-57f6031ee2bf";
+qrData["8-1"]="4ad2cd07-f8e2-4a72-937b-b80d20c6afbd";
+qrData["8-2"]="3fa9ad39-1d36-4700-ae08-e9ab095fb61f";
+qrData["8-3"]="e60771c2-c0bb-4c4e-938a-673991226471";
+qrData["8-4"]="8859ecd4-0e04-4c54-a2bd-40d40290f89b";
+qrData["8-5"]="46e73105-c50b-471d-b267-4cdf87188f23";
+qrData["8-6"]="3cabaa61-26e4-4ebe-8e1e-a4f4bf2cf958";
+qrData["9-1"]="9b921832-35fb-453d-b389-6ee7c8abf7ae";
+qrData["9-2"]="37060e31-4433-4919-9ce5-322735a21e7e";
+qrData["9-3"]="0ff20801-487c-495f-8b30-6baee233e784";
+qrData["9-4"]="76196ce5-5f20-46f6-8035-e8136672a11c";
+qrData["9-5"]="9b0e9ab1-11eb-44e7-98a0-d2f431ef4bfe";
+qrData["9-6"]="31d34bc9-0415-4fc2-bf3c-9f7f3e07d6c3";
+qrData["10-1"]="895dcfb9-70ad-4efd-b7c4-b21e689e2cbb";
+qrData["10-2"]="d9ad8ad7-7db1-4ddf-982a-cbe54f585c2d";
+qrData["10-3"]="a931983b-c640-4805-a13b-43501ba99a38";
+qrData["10-4"]="b6c7f1dc-db0c-4a1e-8077-a11e85d7ac55";
+qrData["10-5"]="dd2e8f32-6c15-44c3-8c70-70c334695377";
+qrData["10-6"]="ab0bcfed-74e4-44c1-b3dc-9f1638971b58";
+qrData["11-1"]="9e930242-6195-45c0-aa03-3a259fef7f0a";
+qrData["11-2"]="ad64c63a-e7e6-4b96-a05e-add7b8a05ed3";
+qrData["11-3"]="fa0a9abe-4dd0-4bd7-a883-19185e514a44";
+qrData["11-4"]="f6b65f0e-26b1-4333-bcb9-bc5f73bdd279";
+qrData["11-5"]="14936ffe-d745-4f6f-ba28-2c483dc25c8f";
+qrData["11-6"]="529d7580-9f86-4a5f-b16c-90ebadc64aae";
+qrData["12-1"]="3a883748-224c-4c36-bacf-5a75b1390881";
+qrData["12-2"]="5b8fa4a0-0aaf-4100-99bc-fac3db2f7d1e";
+qrData["12-3"]="309ab3d1-8ec3-453b-b1aa-72e82b5127d8";
+qrData["12-4"]="c712383c-b374-4122-aa68-98e6861ef2d7";
+qrData["12-5"]="82332c5f-a89b-4739-a380-693cba3884db";
+qrData["12-6"]="d49078e4-a28b-4c01-8366-ccaf856c954c";
+qrData["13-1"]="20a3aefd-f51c-46ef-afa6-5a6ca0808320";
+qrData["13-2"]="158d2875-5a77-4961-8576-a5d3c96edeb9";
+qrData["13-3"]="b8b2a33b-93e1-4b7a-affb-9d3cdf5c82cb";
+qrData["13-4"]="24950b60-ce67-408e-bff8-728a54d4bd19";
+qrData["13-5"]="b62abb5f-dfcb-463d-890f-26f83d826d29";
+qrData["13-6"]="eaf9da98-2e34-4b6c-81c6-5f5516d4fe77";
+qrData["14-1"]="64b298b4-9123-4c2e-ac91-70db0ae7ca34";
+qrData["14-2"]="4879ed2a-e87d-4173-ba5c-060f035cb2b9";
+qrData["14-3"]="8695337a-98d7-4164-adc6-e305233d0edb";
+qrData["14-4"]="49c83e76-4e6c-447e-8a8a-c13f1018accc";
+qrData["14-5"]="9e749fc5-e39d-46c1-8eb9-7f04db0de16e";
+qrData["14-6"]="28223241-f0a1-40c3-9748-28859d22ed07";
+qrData["15-1"]="a8cb508e-4f7e-4c90-82de-fab380f7479f";
+qrData["15-2"]="0f82f1b5-3305-4ff2-ab63-1be918fe6d1e";
+qrData["15-3"]="ffcdcf74-7a70-4b05-8bdd-158b030697fa";
+qrData["15-4"]="e768a897-a256-4e33-b15a-7f3c1a5b0ee9";
+qrData["15-5"]="1dff3fd0-fb65-4091-a2f2-9ec984aba32c";
+qrData["15-6"]="5e69cecf-8d9c-4367-9616-d95465c5df2d";
+qrData["16-1"]="fcb74c20-4c69-426d-bb55-bbac571f59db";
+qrData["16-2"]="3fa514bc-5a77-45c7-9c4a-003e59880e1d";
+qrData["16-3"]="664d741f-621b-4600-a06e-39ff191e45e2";
+qrData["16-4"]="fab8c7dc-8ca2-4473-a507-7846408cb678";
+qrData["16-5"]="3fb533e0-da3e-40f2-ac75-7d77842cb6a9";
+qrData["16-6"]="3f5a08a7-2749-4a97-8b7e-d3cce054bea9";
+qrData["16-7"]="2acf9f2e-2918-49c3-b3e6-feaf3a20cd1b";
+qrData["17-1"]="41d84780-93b3-4c26-889d-052d162ae3a1";
+qrData["17-2"]="e4e652b3-d989-4cf7-8e68-90e4ef4d27ba";
+qrData["17-3"]="a5a7f696-9028-462f-9c6e-2c86ee47b7c7";
+qrData["17-4"]="16bd25de-e947-4a73-98e0-629b935951d1";
+qrData["17-5"]="0f1a0b87-68b2-4a71-9d7a-5102ff22818d";
+qrData["17-6"]="4626a447-792d-4ec5-acc9-613ce894a070";
+qrData["18-1"]="42fb6361-d9b1-4969-a27d-893b91eb3dce";
+qrData["18-2"]="10bb3fa3-e607-458b-9cc3-9c2b45124686";
+qrData["18-3"]="f00d2c01-92ca-4c24-bcb1-a1b0ad6551d0";
+qrData["18-4"]="8f71e618-ed21-48c0-98d2-113181d4bc80";
+qrData["18-5"]="e8212541-4db8-4526-a43e-3811facb22e4";
+qrData["18-6"]="15a0854e-6159-4fb6-859d-d795489bc598";
+qrData["19-1"]="4b76c563-8157-414c-9023-afa81b02d6d6";
+qrData["19-2"]="e2288d09-045a-4463-83cb-f65b8212133e";
+qrData["19-3"]="02e9953e-5d0f-46c2-9533-bf7ea54b0648";
+qrData["19-4"]="551622c0-f287-4a50-8cbc-8a968b17e72a";
+qrData["19-5"]="0186ac2b-3f50-4197-bfb2-cbde74ceb4a9";
+qrData["19-6"]="e7bfaf16-e009-45b2-bbee-d2ec055c6f13";
+qrData["20-1"]="975c371c-bd2b-456a-88a1-d420638cfa1f";
+qrData["20-2"]="aec5fe24-44fd-4c5d-8d56-b559002c01a5";
+qrData["20-3"]="761a6e4e-d59b-4f34-935f-ba6cd0af30b2";
+qrData["20-4"]="695739ce-feef-40ed-96a1-ab567c1ef24f";
+qrData["20-5"]="35d842e8-57d1-4094-bcc2-9abd6e13c28f";
+qrData["20-6"]="2c0294bc-81fa-41f0-8437-59a95ae9acfe";
+qrData["21-1"]="9617fe1f-38b4-45f8-947c-9ab5c817d8e4";
+qrData["21-2"]="737b1fa1-9007-4881-9ee9-6a7879a6d73f";
+qrData["21-3"]="8ff0e319-d0ed-4ea9-975c-bee4591fb5df";
+qrData["21-4"]="c757a4e8-1bca-44aa-8ef7-1a50c7fc7f15";
+qrData["21-5"]="5035866a-be52-421f-8c55-6bd10aaf1cc1";
+qrData["21-6"]="fc4c0c4a-7d7b-44b1-9904-3013a1a3a026";
+qrData["22-1"]="7b11e43e-3ea4-4c88-a7ce-27a0d7dcc9a4";
+qrData["22-2"]="f04f46b5-3c35-490e-85db-5ad2f8a35b6a";
+qrData["22-3"]="db7032d4-e771-445f-93af-07db954ab3b6";
+qrData["22-4"]="6b028c6b-c5cd-441d-907b-4d2e55ddda06";
+qrData["22-5"]="6b51a032-0c2c-48dc-8977-ee9089e6d4e6";
+qrData["22-6"]="1f53e8a7-8883-4e2a-9ed1-3868a9ae1a19";
+qrData["23-1"]="d6262529-8d61-4ba1-aa8f-6b6b369b3c3c";
+qrData["23-2"]="a42c7c88-746e-43b7-9226-1ac3a853fec3";
+qrData["23-3"]="c959534d-2eb8-4514-9369-bc872afe67ce";
+qrData["23-4"]="5257d6fa-702f-4ff9-8bc9-af61f095f301";
+qrData["23-5"]="d9f0406b-a928-4045-96e8-b34c6ee949da";
+qrData["23-6"]="29bbdab9-63d2-40d7-a900-6033fea1ae5b";
+qrData["24-1"]="88151efe-55ba-4542-a40f-cefb9d2df2de";
+qrData["24-2"]="3b67c9d0-7a91-4e59-b03f-740a4b77946a";
+qrData["24-3"]="fe326058-86e0-4f5d-98ea-db660331fd7b";
+qrData["24-4"]="a0a3c16a-67bb-41eb-a722-6328f86a3b8a";
+qrData["24-5"]="6fd5f18e-bb75-4679-9131-096ee61165f3";
+qrData["24-6"]="6288b64e-eaae-49eb-ad03-42e561af9938";
+qrData["25-1"]="a230df2f-5c6d-4b41-b31a-e41917d976e1";
+qrData["25-2"]="7b449c77-d6d4-48e7-bab8-3fafb501c3c7";
+qrData["25-3"]="b5be04c1-97e9-4c0a-9fba-d735eca90eeb";
+qrData["25-4"]="fb43eaa3-40ff-41ec-b678-f81cabbd848d";
+qrData["25-5"]="af5012a4-99ae-4896-9de2-d367c5479e54";
+qrData["25-6"]="e64b7d1b-a6df-473a-8152-57b0419aaaeb";
+qrData["26-1"]="c661a249-c413-4e2b-97c8-027016e115ce";
+qrData["26-2"]="66c1372c-1d83-4231-9ff1-58e93e31bb1b";
+qrData["26-3"]="1f794627-8aac-4d3b-87eb-4cecea5e79ea";
+qrData["26-4"]="19f2984f-7d78-415c-a96a-da938328ec15";
+qrData["26-5"]="d45f31d2-e02a-459f-be60-455fac1f3ee8";
+qrData["26-6"]="2a946e58-7c7d-4ad4-afd0-f84a97a344a3";
+qrData["27-1"]="3dee8900-e6a8-4ebd-b027-d75f67ebb68c";
+qrData["27-2"]="7db467db-e610-47c9-9797-067149bfb24d";
+qrData["27-3"]="da459676-2af7-426d-8a41-cf4b32a269d3";
+qrData["27-4"]="c420c87a-b558-44b4-b969-244623d2f9b9";
+qrData["27-5"]="aba326e6-37e6-4d86-ad78-7b45dfb0825d";
+qrData["27-6"]="2aa3d744-65b1-4e20-b7bf-fdb6065db61b";
+qrData["28-1"]="43ee0aff-5f4c-47b4-b3a5-d79b4129e83e";
+qrData["28-2"]="7ab2bfc8-cb86-40a0-9b8e-aa60668a65cf";
+qrData["28-3"]="dbf9df63-c7ba-4221-93a8-ef7fdb296dd3";
+qrData["28-4"]="dffd69c4-7a06-4cd2-9f56-ff778a028c24";
+qrData["28-5"]="d15c9900-f0f5-46ea-9bf0-83946d8e4c1a";
+qrData["28-6"]="c11b4a10-1779-485c-9451-7016072c0409";
+qrData["29-1"]="fdf471f2-bae2-4687-b78c-0afed91b0d8b";
+qrData["29-2"]="46a3191e-b9b2-4c2a-8f44-0360115add4d";
+qrData["29-3"]="88d43be7-4711-4d44-89b1-5e6a558afb34";
+qrData["29-4"]="85aea8f5-4166-42d7-a7b2-e44f00bb2632";
+qrData["29-5"]="53e09a60-8b66-45a9-929d-20bd7725436e";
+qrData["29-6"]="54728290-fa76-435f-98cd-0a1584d73dea";
+qrData["30-1"]="20983dea-5bca-4c5f-8c6a-ce22bea0dbb5";
+qrData["30-2"]="a15981c1-f95d-4819-bbff-835e38e8cdcb";
+qrData["30-3"]="e116e370-c25b-467e-9705-bc5f8eec4e0c";
+qrData["30-4"]="c05c724a-9498-4d51-a92e-8f6b97d563a2";
+qrData["30-5"]="36b407f0-8f71-4391-b084-b41c8442785d";
+qrData["30-6"]="c1e028e5-a820-4b39-971e-db7d73d1898c";
+qrData["31-1"]="561b3ad9-8be7-45d1-a962-da027b9d6f60";
+qrData["31-2"]="b58d509a-c955-41cd-882f-183cbc31bca9";
+qrData["31-3"]="7f990f5c-3588-4ae9-a186-c2c9d7326c1c";
+qrData["31-4"]="87db7724-a6a3-4026-af24-2f9cb5565527";
+qrData["31-5"]="75fda6a1-47de-4e83-8030-79bc42337de5";
+qrData["31-6"]="b1a74b41-c700-476d-940e-4257baaaeaaa";
+qrData["32-1"]="5e76cf50-a34f-4f14-a55f-8bc9149477f4";
+qrData["32-2"]="c1ad4a58-0e3d-43d1-a982-5f7ea1827038";
+qrData["32-3"]="abc380fc-8869-4283-89f2-dd094d7186e6";
+qrData["32-4"]="657b6660-cdaf-46cf-870f-caac3b3349c5";
+qrData["32-5"]="2e363e83-150e-44cc-84d0-1b2575981440";
+qrData["32-6"]="13443210-0783-4e26-8b41-912d5d376d0b";
+qrData["33-1"]="272b6e99-ef97-43d0-8a92-cc4727adf35a";
+qrData["33-2"]="d5952930-b656-40eb-a40b-1ab7d5994a83";
+qrData["33-3"]="45552965-d783-4816-a1ba-3044088cfae5";
+qrData["33-4"]="9c2c5f36-21b1-44ed-be1c-3d6fc10bae87";
+qrData["33-5"]="7d991392-da92-4d85-85fd-784b02ac2ac6";
+qrData["33-6"]="31bad69f-e87a-4cd9-82e1-366808ad568d";
+qrData["34-1"]="4a9a69f2-2e90-4b3c-a1cd-7c2ef89cb8e0";
+qrData["34-2"]="b81f35c9-b6aa-4f46-a6a4-826983a0de58";
+qrData["34-3"]="0cb8854f-79b5-43f3-9d7b-f5538cc0caf8";
+qrData["34-4"]="216927ff-c603-4f97-ba99-00f5d3721e05";
+qrData["34-5"]="c6055b60-904d-4c6c-bea7-d4f1ed31c0d5";
+qrData["34-6"]="6979269b-42f7-41d2-bcdc-c37dd55c783f";
+qrData["35-1"]="f52f1f3c-3e7b-4364-9a9a-a1c8f50452e6";
+qrData["35-2"]="d22a900b-5925-49df-ad9a-171499b06913";
+qrData["35-3"]="ebc301d2-9daa-4fcf-ac01-ddc1985128d0";
+qrData["35-4"]="feb4120e-2b1f-40ca-96a3-09a6eb5e8bde";
+qrData["35-5"]="1ba0bcf6-8873-4091-9672-fdb26c5d3405";
+qrData["35-6"]="72fc652a-537a-4538-a98f-a5d6a062129e";
+qrData["36-1"]="ea7049b3-e9c9-487b-8ca6-c22a8921c589";
+qrData["36-2"]="a9d9ecf2-308d-4d5e-86c1-99fd08139bc9";
+qrData["36-3"]="c9ddab9c-0065-4a5f-86fb-22454697ddd8";
+qrData["36-4"]="c45de5f0-b0b4-4925-9ac2-6f928acfe5b5";
+qrData["36-5"]="ce6030df-bbe0-47bc-9d42-f18bfc483ecc";
+qrData["36-6"]="825ab7c5-f6ae-4f08-96c4-42e3ff25816a";
+qrData["37-1"]="3398755e-22f3-4506-a3af-f6038b4df024";
+qrData["37-2"]="c62f51a8-716c-4c56-a2d0-7486326bb332";
+qrData["37-3"]="e05d96e1-5c66-4290-ae07-1676ab680b75";
+qrData["37-4"]="fcf83008-8dfa-4e63-93a9-d1f3074e0aba";
+qrData["37-5"]="43f61f2c-7844-43d3-8c27-300e3b9f0ef0";
+qrData["37-6"]="036579fd-e3c6-4175-ae8b-c5aedf416d79";
+qrData["38-1"]="0c0c787b-291f-488d-a41e-2614c83d40b2";
+qrData["38-2"]="bc5c4cf3-8611-4d42-b7f7-ec3d70c78acb";
+qrData["38-3"]="d150f3a5-f484-4ddf-aceb-bef146831dd5";
+qrData["38-4"]="a074be61-bd62-44b5-abac-9dab38094b58";
+qrData["38-5"]="f236e914-5adc-4f15-877a-cc85f702e8ab";
+qrData["38-6"]="4b31abe0-b034-4fd5-8c7b-f5820e42765c";
+qrData["39-1"]="3baef631-b11f-4775-b10c-7867b74f9d3d";
+qrData["39-2"]="184cc33c-31fd-493d-aa54-d63c57121a66";
+qrData["39-3"]="30ea6988-0918-4e7b-a872-d7d48d3bc26c";
+qrData["39-4"]="8c5b5b36-dac8-4484-aa83-205e5155fc35";
+qrData["39-5"]="18f236de-0ffb-4d29-896d-541e3da7c016";
+qrData["39-6"]="43cb4587-8c83-43f4-8d2b-4911796696da";
+qrData["40-1"]="2402aef1-b179-4479-b649-7daaaa2214fa";
+qrData["40-2"]="2dc46ba2-123b-4bd4-978d-84bc35c3f0b7";
+qrData["40-3"]="9d0438a1-f0df-4faa-ad9d-0aaae31a2882";
+qrData["40-4"]="97a75150-9e4e-4653-b247-5c5c8552569c";
+qrData["40-5"]="23b30ac7-9cf3-4fe5-8cc0-5e7a9c7f90e5";
+qrData["40-6"]="f2b4bb04-ebee-405a-b500-2dd86e755567";
+qrData["41-1"]="97d43236-3b50-4185-b9c1-a97260e833c2";
+qrData["41-2"]="c5205b6a-fa6a-484f-8a6d-549224d72def";
+qrData["41-3"]="c45e2c3c-3128-483f-b9d9-09d4ef5393a6";
+qrData["41-4"]="3adea053-acb7-43bb-b95d-7783a56eac37";
+qrData["41-5"]="9d181c8d-ce30-4e5c-85d9-06529dfa8f23";
+qrData["41-6"]="18b8ce59-5f93-44c2-ae27-ceffb49ecd42";
+qrData["42-1"]="3468b60f-6aea-4490-9a88-a4423673ca44";
+qrData["42-2"]="a1073998-ad6f-4f53-9b7c-35965eae6a54";
+qrData["42-3"]="1690412f-8df8-4306-a226-897ed0f011a1";
+qrData["42-4"]="a0a76a38-d33a-4144-bd6a-c4a17282c96d";
+qrData["42-5"]="b6bd12e3-64aa-4d13-b5d7-b90f8f076222";
+qrData["42-6"]="c364b7f7-10c6-4496-9ad9-e3ef26dea71c";
+qrData["43-1"]="5f756547-493b-47c2-b52a-9af86aedc1df";
+qrData["43-2"]="03f51ec8-e5ad-47c3-8c17-912def07eb36";
+qrData["43-3"]="c28ec087-6fa2-4b72-85ed-5630fb65f113";
+qrData["43-4"]="030df00b-da3f-4235-a1ba-a0a2c2b269a8";
+qrData["43-5"]="6b40f5a7-57bc-4d4a-a30e-99fad85a7d30";
+qrData["43-6"]="db3fec63-f96d-4e16-a5e4-33e5ea3725fb";
+qrData["44-1"]="e840015f-615b-4e0b-a22f-0de2f312663e";
+qrData["44-2"]="713a960d-c794-4aa0-8f95-727ac4728a25";
+qrData["44-3"]="19212a41-c01b-4325-b9f9-be67dd1cbe6d";
+qrData["44-4"]="50a849a5-1490-483f-bb0a-3a71b1c1bc59";
+qrData["44-5"]="84eeac6d-d701-46a3-b953-aa64bb705d3e";
+qrData["44-6"]="1b8b2a69-67e7-4d7b-84e5-92e3215bdc73";
+qrData["45-1"]="6dd640d9-3425-4e5b-8e08-19a60a10f18a";
+qrData["45-2"]="35aca3ae-1fbc-44ff-887c-7080ed8f6213";
+qrData["45-3"]="2b5a228c-b658-4618-b907-c677d0616d2f";
+qrData["45-4"]="21a4a4c6-a5e8-4132-bf54-5f297748ac1a";
+qrData["45-5"]="b8576a14-add0-45e1-9f9b-f7ce109c73c5";
+qrData["45-6"]="ec892139-9227-4483-989b-47538d6cce87";
+qrData["46-1"]="a8ff11ab-ab3b-4e99-8275-b6f1772823c3";
+qrData["46-2"]="66651aaf-4423-4110-8649-288c06f011e0";
+qrData["46-3"]="4f5de469-ebb3-4bb6-82c8-df4afa3dd723";
+qrData["46-4"]="e03d87e8-0a21-40e2-9cb8-5361f8bec7e7";
+qrData["46-5"]="23bb9a64-fa54-4988-95be-c829852416a8";
+qrData["46-6"]="66ebbab6-1b6f-4bd5-adb2-679928700cba";
+qrData["47-1"]="fd6f58d3-7025-418e-ad40-3c5a7d33ef18";
+qrData["47-2"]="7d1102a0-a4b6-49b5-b5ca-a4ab64e85deb";
+qrData["47-3"]="6f658d16-c40a-4445-88cc-f768bcd9a5cd";
+qrData["47-4"]="df5acc73-9954-46df-b334-c2b35c8994b5";
+qrData["47-5"]="c64c29fa-3d94-4708-9e4b-722312991a74";
+qrData["47-6"]="467dc14a-954a-41d5-9b70-42b4a967b270";
+qrData["48-1"]="e64c8ead-9e1c-4979-b664-66362e09b53b";
+qrData["48-2"]="90035f9e-b329-4ce6-9e74-c83432d1234e";
+qrData["48-3"]="0d475a98-dc5f-44bf-bfa7-338a14654647";
+qrData["48-4"]="aaccf25b-854a-4480-9229-9c5aa90b617c";
+qrData["48-5"]="b81e52a0-36c5-44af-8688-50d230c4693f";
+qrData["48-6"]="4d5d1fb6-5739-476a-b0be-83dd3cdda63f";
+qrData["49-1"]="08a01db7-e477-4a44-a095-f98122c939b6";
+qrData["49-2"]="65b29f55-6a3d-47e8-be76-8530134e1747";
+qrData["49-3"]="b0c6957e-28be-4cb5-86e9-d88a29771992";
+qrData["49-4"]="d842be9c-c082-45b5-b958-57868b50c102";
+qrData["49-5"]="4a2f904d-dcb8-4021-88f4-f2a450ce3dbf";
+qrData["49-6"]="2781aa12-ab46-49bf-a690-0a564a36a6cf";
+qrData["50-1"]="f570767e-1f81-471a-969b-9d480a86240b";
+qrData["50-2"]="277c136c-14b5-4bbe-9477-f7b2f1f86b10";
+qrData["50-3"]="3adc1370-a4e8-4a35-93fb-15e5659555f4";
+qrData["50-4"]="245b0eff-68b3-45e7-addc-1fd5139d4174";
+qrData["50-5"]="5c2fdcfe-d490-4ddd-a83b-387e7351a2da";
+qrData["50-6"]="c9cf9603-373b-45ef-abb3-2cac23a948f6";
+qrData["51-1"]="b75dca7e-edf2-446d-904f-55e944465a07";
+qrData["51-2"]="84d6e154-5488-475d-bc7a-fe5c96c1c641";
+qrData["51-3"]="2e711728-d725-491d-99f7-bb6ac79b20c4";
+qrData["51-4"]="b408165a-d41e-4e57-aef2-70f1614548ac";
+qrData["51-5"]="374116fe-711d-47af-be63-e8c3a7387199";
+qrData["51-6"]="bc630b2a-2675-49ab-8eee-9e7ff7f35b64";
+qrData["52-1"]="2505f2ef-a3b3-40c6-a1f9-4d45105b57bd";
+qrData["52-2"]="6094e33f-ea4f-42e1-8ee0-1e7069fd44aa";
+qrData["52-3"]="88a88892-b071-4a40-b2f2-1dee38c8ec95";
+qrData["52-4"]="ee67be98-e841-4505-8817-5a106e5fb78e";
+qrData["52-5"]="28998483-a008-44ea-870e-182608ad0dfb";
+qrData["52-6"]="cd9f3b94-c8df-495f-bf6a-d32b4b183d0a";
+qrData["53-1"]="c9f04ce9-72b2-4751-b9cb-0eff2c95092f";
+qrData["53-2"]="ca095492-3e27-4706-8ec0-956f80d47eee";
+qrData["53-3"]="06af67a6-9861-4ab9-8b6e-857a5a5b7a90";
+qrData["53-4"]="bc0c6eab-35b3-428d-bfc9-3182e2af37fd";
+qrData["53-5"]="e5bf5ae8-def5-472c-af54-2a3988115a33";
+qrData["53-6"]="3fbc0c8a-f1f6-46a2-8b88-ca2cb2f22074";
+qrData["54-1"]="fa6fb9ce-fd64-4564-9543-cd3fe2a055d2";
+qrData["54-2"]="0659ebd7-4e46-419c-ba34-51dee9c45971";
+qrData["54-3"]="94616b77-91e9-492b-a523-81c55c91abc3";
+qrData["54-4"]="181f624c-fbb9-4c7f-9aee-fb294d78f160";
+qrData["54-5"]="c3124353-7482-4c21-8182-df753c78dbf5";
+qrData["54-6"]="93c2bf75-4a9c-4c22-a1f9-7bb33c7c826f";
+qrData["55-1"]="2f58fffb-761f-4ee8-9364-4ee80328ef88";
+qrData["55-2"]="b363e6e9-1629-4c0b-90ac-ae97d79e54b0";
+qrData["55-3"]="d501aede-c4fd-4685-a077-a0fd17d03c85";
+qrData["55-4"]="62d7c0f4-7bfd-429e-83ff-e7a6b11c93b9";
+qrData["55-5"]="461018ce-a31e-4c4c-a81a-5b51b5fab0f0";
+qrData["55-6"]="dae9d24d-aced-40d2-a9b6-5da8b9e6f087";
+qrData["56-1"]="2c27248c-d13d-4081-be83-1f1ee81844aa";
+qrData["56-2"]="f40b589d-3657-4be9-8252-f16fde82dffb";
+qrData["56-3"]="e5f6e15a-dbdf-4a45-910b-6f2c16fd9d1f";
+qrData["56-4"]="d2683c50-2a04-40d0-819a-0ae3d2010188";
+qrData["56-5"]="b4baea85-cf5a-40ab-a773-a0f2a9187346";
+qrData["56-6"]="5fe19b93-099e-4653-b54f-2ad6ec644f51";
+qrData["57-1"]="c69532ea-662b-4593-985e-8489e5d443fa";
+qrData["57-2"]="a45f3b7b-9613-4a17-bb36-6f84ab2c9c2d";
+qrData["57-3"]="546e4e66-ee92-440e-a83a-0a6c2aab57b8";
+qrData["57-4"]="fb7ebbe6-6546-4ccd-b370-cca1f8dae96a";
+qrData["57-5"]="f91ee5c8-5e5d-4ea4-a3af-96aa065ef1de";
+qrData["57-6"]="cee72ecb-6195-4da4-ae7f-515412dd296a";
+qrData["58-1"]="72775b88-7bb4-449c-a3fd-9cf88722b826";
+qrData["58-2"]="e92d54d1-7a58-4080-a96e-f918a73c6ccf";
+qrData["58-3"]="d6fd84aa-f81b-4ed3-a4af-9e74c6ec0f67";
+qrData["58-4"]="8af9b752-1ebf-46bf-a37a-b8eea5c42c69";
+qrData["58-5"]="2e802c6c-ba82-4506-9893-dfd984def55a";
+qrData["58-6"]="fc184d5a-6405-402f-abc4-5fa10ab2ab4b";
+qrData["59-1"]="3be460d1-ce1e-4c7e-9c50-edaff9932cf8";
+qrData["59-2"]="ad0b5aeb-cae5-45bb-91ad-fa915cf4efd8";
+qrData["59-3"]="89d166c7-a0fb-4f71-9404-b55f019525bc";
+qrData["59-4"]="8696a208-efaf-4520-a326-48cd8a5c9250";
+qrData["59-5"]="c0fd80b1-074c-4857-9c0b-e5a53e8cd6a4";
+qrData["59-6"]="6703c512-1d81-464c-b799-f2b146b67713";
+qrData["60-1"]="ec4f44f3-70a9-417f-bbeb-f1fc0c4eaabb";
+qrData["60-2"]="59c98675-ff4a-4339-8726-2416f92bb50d";
+qrData["60-3"]="5379f93d-9504-43a1-8a97-68f7392e0148";
+qrData["60-4"]="6c437b49-e83d-40c3-8017-52e166599faf";
+qrData["60-5"]="c1e10435-b073-4403-9126-cddad69f0892";
+qrData["60-6"]="851af787-ef99-41de-b9e5-9064f4a55523";
+qrData["61-1"]="781375ee-06f7-41b3-8d1b-7727e9eefe29";
+qrData["61-2"]="78d1ebc9-d0b5-431a-9d22-1f9cbcebafea";
+qrData["61-3"]="d79d329d-25bd-4e5b-b552-b625b521c766";
+qrData["61-4"]="e3026609-953a-4164-97d0-771828ba20dd";
+qrData["61-5"]="3d126781-d8ca-4e91-9063-45d069b1438c";
+qrData["61-6"]="6a01cb48-e7d1-4e10-9191-66b35b886786";
+qrData["62-1"]="8fd63521-c1b6-4541-a65f-8bebad0de28f";
+qrData["62-2"]="89dbcf17-f127-4f2d-9fc6-81997caee827";
+qrData["62-3"]="ee0098e6-59dc-4c3a-9f72-9f2d874d3bc3";
+qrData["62-4"]="803af054-6af2-411d-a143-c6b68e045b9f";
+qrData["62-5"]="72be2e6b-d851-4469-afcd-68be7ede1215";
+qrData["62-6"]="dd117e50-c159-4ab2-8fd9-c9dbb6a283ed";
+qrData["63-1"]="61f0df6c-a9ba-4495-b08a-ac7e3893237d";
+qrData["63-2"]="44cfc648-e384-4fc2-9b2d-6688e738addc";
+qrData["63-3"]="a97919b1-cda9-44f2-b539-05d8e9f19d3c";
+qrData["63-4"]="0916bdb9-6340-4644-a0a9-0393b582758a";
+qrData["63-5"]="27efa3db-515d-4dde-8fef-a0cce2b20114";
+qrData["63-6"]="5b9326b9-e50c-4374-a4a0-f721a5e8a67e";
+qrData["64-1"]="bbb940d8-5d83-41a1-8502-07179422d09b";
+qrData["64-2"]="a52472c3-8287-4cc0-8450-5cda06ef4bb6";
+qrData["64-3"]="6d482e86-35c6-44c5-bc3d-a790f189fd62";
+qrData["64-4"]="392ccd05-9082-43d7-a4c9-76df582f5674";
+qrData["64-5"]="9c4fd57d-626d-4f54-8ba0-5e2cb5239870";
+qrData["64-6"]="0a1570ac-bbab-40da-916d-0f76de338711";
+qrData["65-1"]="9b240626-9c3f-4b1d-885d-bd22321eda48";
+qrData["65-2"]="467d3362-671f-44e9-8522-63a0e973cbf1";
+qrData["65-3"]="15172f1c-0e97-45e3-942a-18dc1893f7f1";
+qrData["65-4"]="9900ca9a-f8f4-4766-9875-f863776263ce";
+qrData["65-5"]="29c6a0ba-dd33-4da3-8f91-23e14fa7d9c6";
+qrData["65-6"]="a8741f99-813d-4876-a548-6dc4056fc3bb";
+qrData["66-1"]="0aa205c4-cb23-4af8-ac26-92b179972c2c";
+qrData["66-2"]="1abd9da8-e63a-41b3-9172-ba22581f9e65";
+qrData["66-3"]="aafa92dc-d2fc-4e79-8261-d1fd35e6f524";
+qrData["66-4"]="07bf560b-1f15-47bc-aaeb-6dc1c549892b";
+qrData["66-5"]="1b790d50-e641-4f38-adc1-b9a47a4fcf55";
+qrData["66-6"]="f90b03bf-33cc-4ca5-9af0-9eafd840d580";
+qrData["67-1"]="b2ca21cc-993c-43f9-bc49-9ff2c1fb3c66";
+qrData["67-2"]="f21aae39-264b-4d84-9a70-85177ec333e3";
+qrData["67-3"]="c41aa6ba-e4f0-45ec-b30a-3cfdd889278a";
+qrData["67-4"]="ef5f397f-8439-482b-9e65-3f34fb1844ca";
+qrData["67-5"]="ba6f4c2f-d2d6-4ea9-ab0b-a6312f3bbe5f";
+qrData["67-6"]="aa84cd89-6003-48cf-8a3d-56147010895e";
+qrData["68-1"]="749ba02a-0947-489f-8d0f-387bbd66a3d7";
+qrData["68-2"]="cdf168e6-e279-415f-89fb-80bea9c72740";
+qrData["68-3"]="650ef418-4916-468d-8087-1c245fff297f";
+qrData["68-4"]="498d8846-df24-48ba-80c4-1362f2e729ca";
+qrData["68-5"]="f67f2c75-175c-41d9-bdd8-9ccc61250db3";
+qrData["68-6"]="ffe5384c-3a38-4979-a302-d4bd4f10f7e1";
+qrData["69-1"]="639466e8-47cb-470a-964a-e1faf8687320";
+qrData["69-2"]="00e6bfd3-50bd-460d-be82-67679841d43b";
+qrData["69-3"]="81306f94-256a-4afe-a32d-cbf6ff7824f0";
+qrData["69-4"]="cb8ffcac-d08d-46a9-b26a-22db707b9c17";
+qrData["69-5"]="65b8536f-11cd-45b9-af13-e456f26cd2b1";
+qrData["69-6"]="02e388e7-ed10-49e4-84a6-fc02908142df";
+qrData["70-1"]="cf7f975b-c373-4bd8-82b7-20984b6cc93e";
+qrData["70-2"]="4e6ffa50-0d19-43b0-acc4-4491e48bbd07";
+qrData["70-3"]="5c9cd2fb-02ba-403e-8913-21dfe05eec74";
+qrData["70-4"]="195fb14a-afc7-4e97-b464-f31b96e06c51";
+qrData["70-5"]="fe8a2be0-6638-41bc-b125-06231f69dbdb";
+qrData["70-6"]="f49a2518-0be6-47df-9eff-e0a231abfc6a";
+qrData["71-1"]="4e0d7909-118f-49aa-884c-e3d69b02270a";
+qrData["71-2"]="615579cd-3311-4b72-83d5-874dfe6ee2c1";
+qrData["71-3"]="a3083636-f05b-4b8d-b89c-32f4357920ed";
+qrData["71-4"]="334ae92f-890b-4129-ad30-78e8d0058879";
+qrData["71-5"]="3f1c8784-208e-4341-a46a-cab4a103687b";
+qrData["71-6"]="c982e600-1c2a-4d5f-a01e-dcd42970e965";
+qrData["72-1"]="1e0733cf-4932-4935-89e8-578ec41bd02f";
+qrData["72-2"]="1b209c56-4644-4e1d-b1f8-0cff288e1cf8";
+qrData["72-3"]="1c4eed16-8b10-4234-9b7b-b828d173469b";
+qrData["72-4"]="68322a5d-2e81-4be5-8cb0-f91b94a2ac51";
+qrData["72-5"]="f8a008fb-a3fa-4a07-b472-51375859d019";
+qrData["72-6"]="c512bb05-0f59-4f22-94f8-4598aa9d8902";
+qrData["73-1"]="6eaf9ae5-ac58-4e6f-b0ca-76134193f30e";
+qrData["73-2"]="92d3429f-c340-44b2-a503-03b62915e77e";
+qrData["73-3"]="282d5141-4fe2-465b-882a-bd57a819912a";
+qrData["73-4"]="203ce41e-398e-4e2e-bdbb-fab4581db8e4";
+qrData["73-5"]="c045f124-8fcf-4b5a-ad8e-31d869f5a74a";
+qrData["73-6"]="a524e326-ac7a-4791-b2c0-a89360a36c40";
+qrData["74-1"]="7f1fdd5e-5778-4258-a125-2429fa045c08";
+qrData["74-2"]="2473e099-7e64-41ec-bb6c-5928bdb58627";
+qrData["74-3"]="e6d42a72-ed19-44da-bf19-00bbca83e1a6";
+qrData["74-4"]="02b916e8-a07d-42c9-b62b-ea449c46a6af";
+qrData["74-5"]="c4b95576-2beb-4803-bba3-0a4e0fe65970";
+qrData["74-6"]="830a4a46-da06-4987-989f-e7b88a19d98c";
+qrData["75-1"]="3b26b490-cd07-45ed-b660-3acec752412f";
+qrData["75-2"]="48b738c1-9c22-4536-a3e5-a5fe4ec6ff7e";
+qrData["75-3"]="3ef6c8b3-d80f-4082-8ce1-7b67ba454fba";
+qrData["75-4"]="c8290c40-7a83-407e-a9f5-90210d681a3a";
+qrData["75-5"]="78101feb-a866-438d-99a9-3ea628726889";
+qrData["75-6"]="9c7e9190-310c-4558-8d45-0bef057cef3b";
+qrData["76-1"]="ed8c32b4-bf7c-4be0-a56c-3cc04eaf29fb";
+qrData["76-2"]="3b8fd1a9-d34b-477e-8b05-d3cf650c7698";
+qrData["76-3"]="564eb700-4041-450a-b86f-3405dc043255";
+qrData["76-4"]="5f78736e-a995-4148-8907-eee41a164b27";
+qrData["76-5"]="2288dc78-4c45-4a1e-8738-22c947ca1013";
+qrData["76-6"]="31298790-98b4-44e1-95e8-2e5e14bf3114";
+qrData["77-1"]="3d0094f3-6bf2-44fe-bffb-8d3765190d04";
+qrData["77-2"]="42318769-c49f-480d-8022-033f04e333fb";
+qrData["77-3"]="4106c7df-0519-4086-909d-3c946f6d1f55";
+qrData["77-4"]="35ddb99e-2bcf-4951-9428-d600dde4ca0f";
+qrData["77-5"]="20ad5429-5312-47d6-b446-adfbd85539e6";
+qrData["77-6"]="03e43305-524b-4eb2-8138-816e10978237";
+qrData["78-1"]="6bade58c-b91c-4754-9e9f-4b829d60f8fd";
+qrData["78-2"]="1122dd4c-611f-4359-8687-dfa70b48b329";
+qrData["78-3"]="ac3f80e8-c4f1-4e08-bb1e-f3be50a93e1c";
+qrData["78-4"]="ce3a703a-0268-4ea2-ab6a-af7486db3657";
+qrData["78-5"]="727e86d1-083e-4970-90f9-8bf579e8bda3";
+qrData["78-6"]="e26949de-8294-4ac0-b162-fb03945e4f71";
+qrData["79-1"]="baaa2580-240d-4988-af08-c84008d5178c";
+qrData["79-2"]="fee71f49-834a-42d3-927f-dafa8d4bf41b";
+qrData["79-3"]="1a27e585-fa4d-41ed-bed6-79e393a3b453";
+qrData["79-4"]="708d10bc-f3b6-4193-b6fb-a13235806063";
+qrData["79-5"]="2a2cbdeb-cce3-43f5-b7c0-940f61094dc3";
+qrData["79-6"]="78d81aef-e3bf-4096-8ee6-f47866a99a78";
+qrData["80-1"]="355a8521-b2df-436d-937a-8347841e04e8";
+qrData["80-2"]="5d247951-3850-4319-b6e3-fb20f33a6b92";
+qrData["80-3"]="e9b01e1e-e856-46cf-b144-841d4124747f";
+qrData["80-4"]="9e2a4a97-8f54-406c-a823-83bfeefa2695";
+qrData["80-5"]="4c767841-8209-4bc4-81dc-ad2a502e0f14";
+qrData["80-6"]="82eda4d2-2cda-4563-9374-d85acc3996c0";
+qrData["81-1"]="fc9b4cca-e126-4f96-bc8f-93e8752f238d";
+qrData["81-2"]="cf283c83-0c8b-4f80-b4bf-d861822e78bd";
+qrData["81-3"]="b0ad149d-5f3e-4f67-9cbf-094a5af0d1d2";
+qrData["81-4"]="aa8f9f1d-cfa0-48f6-b338-6a8f29873878";
+qrData["81-5"]="025dea69-858a-479a-8631-f5ea159d0205";
+qrData["81-6"]="a4617ed8-da86-47b4-bab6-b916c1020baa";
+qrData["82-1"]="8922f7c5-cadc-4a47-bc1d-06fe7bc89362";
+qrData["82-2"]="d6400ff5-03e6-489f-8b83-bc9ee38e02c1";
+qrData["82-3"]="1bdd9036-0eef-48e3-8815-31979d8a2bd3";
+qrData["82-4"]="e1d4aab1-0ca8-480a-ae11-ac6dd0da6f3a";
+qrData["82-5"]="93c4b1a2-6d3f-494b-8508-45f7b2c52bc3";
+qrData["82-6"]="64c73c6a-0997-49da-865f-6bde0dc19c21";
+qrData["82-7"]="4d571888-ce56-4804-b777-99efb975909d";
+qrData["83-1"]="dbc8aea1-adc6-4235-ab91-f3115b4bd838";
+qrData["83-2"]="7ba71c24-9535-47c3-bb51-bd1a136693cb";
+qrData["83-3"]="e4cdb363-ae89-45a6-b836-f456854f4a20";
+qrData["83-4"]="af234fc9-1768-4e7a-aec2-a338617d6f2f";
+qrData["83-5"]="92566df2-9e8f-4107-a264-fa4248bfb263";
+qrData["83-6"]="7f1ff28a-1e09-4012-a5ad-44db0e27207a";
+qrData["83-7"]="3edd26d0-c1d4-4ba7-9dbd-ce600aeeaca5";
+qrData["84-1"]="d26e2b6a-3f51-40e6-a647-894d295e9263";
+qrData["84-2"]="43a1b678-7128-435f-aefe-58ec447bfd62";
+qrData["84-3"]="85f7bcf8-3936-4faf-9673-76979e62ee55";
+qrData["84-4"]="2c873c3d-e025-4e6a-9254-b226469a19bb";
+qrData["84-5"]="381541c6-eadb-4b9e-9475-178ba65c519b";
+qrData["84-6"]="f131345f-8f97-409c-9661-74d0ca4ef7b3";
+qrData["84-7"]="823471a6-58cc-45da-acee-5806a0bf4415";
+qrData["85-1"]="92abbdea-c75d-4f5f-a090-78b547ac95dd";
+qrData["85-2"]="f096b47e-0286-4fc5-83a8-fab9b848e070";
+qrData["85-3"]="c1914593-09fd-40b1-827b-3566546b209c";
+qrData["85-4"]="e181895d-adf2-41cb-bfd4-ac9e9b3a36fb";
+qrData["85-5"]="54e12cab-6009-4d6c-9a87-d04200d128cb";
+qrData["85-6"]="d4e54b69-ecd1-4d2d-a8ba-facd217c7861";
+qrData["85-7"]="fedad930-5985-4d52-8c21-87a18975b935";
+qrData["86-1"]="3e36beaa-7acf-434c-a8f8-dbd7716c2396";
+qrData["86-2"]="ae6561ef-26b0-4df1-84ce-743379f3c21a";
+qrData["86-3"]="35d6d070-2632-4f2d-903a-6589895f5e8e";
+qrData["86-4"]="2cab2a64-0437-490f-90c4-43dba0675ba4";
+qrData["86-5"]="8d7ce9b1-7413-407d-b2b4-f995bc734f85";
+qrData["86-6"]="4e71aedd-530c-4e5f-9177-0911489c41f2";
+qrData["87-1"]="7ab2bf8a-ffc4-4191-b623-00d37924fb7d";
+qrData["87-2"]="24123e37-1140-412e-8861-faa33c281d98";
+qrData["87-3"]="103f0e51-3ebc-4f8f-9928-16d407fe4d22";
+qrData["87-4"]="6ebb0652-428a-4b84-baad-c8eebf0afc36";
+qrData["87-5"]="9a4c4b15-c416-4a11-8daf-e881e758ac61";
+qrData["87-6"]="45e5bee6-5fba-442f-93cc-456794e079af";
+qrData["88-1"]="ae9f774a-4b0f-4877-9bae-e70166822411";
+qrData["88-2"]="e62825e4-865e-4d0c-b1a5-e9ef6b47256a";
+qrData["88-3"]="799bbd28-7f38-4731-9741-0391d83d96bc";
+qrData["88-4"]="86d8f765-81e4-448d-945b-cd3755c1aed2";
+qrData["88-5"]="3be84cba-5391-45bd-a247-b1baf8fe99c9";
+qrData["88-6"]="776f6ee0-b335-46cb-a4ff-b2ff9cc5c765";
+qrData["89-1"]="7ef6bbed-d9da-4580-9032-bf784b808851";
+qrData["89-2"]="4a5a0f1b-2892-40b1-9ef6-2944e8aecee3";
+qrData["89-3"]="f06e495f-e9d1-441b-8ff1-2f3baa083f73";
+qrData["89-4"]="a2ec9879-972f-4cee-93ec-c22dd15ece93";
+qrData["89-5"]="b99e94ca-52a1-480c-bf82-86cffd4e7020";
+qrData["89-6"]="fefde664-4f56-46af-af51-f01e73827c83";
+qrData["90-1"]="ddb4a3df-ee9e-491a-9b91-02e1bce16ebc";
+qrData["90-2"]="42bea6ff-4688-4eaa-8ae4-519ee9e9780f";
+qrData["90-3"]="b4d83e15-0812-43b8-b5d0-79c70dbf40d3";
+qrData["90-4"]="75122e76-2bef-4a23-9dca-0bdd430abc79";
+qrData["90-5"]="56d19dba-ca2a-482c-9129-7fc879e12fcd";
+qrData["90-6"]="c3208cc5-8d8b-4c17-a4b6-198848d24c72";
+qrData["91-1"]="8bfddda2-d539-49da-aa54-5e8b61714278";
+qrData["91-2"]="92cfa16d-a4e9-41d9-95c6-6e63a19fafef";
+qrData["91-3"]="46ffc0db-a163-42e7-abf5-ca2da6a7f4eb";
+qrData["91-4"]="88917285-e1be-47ef-a9f6-d79977c3f59e";
+qrData["91-5"]="3f2801f9-dd91-4470-ba15-722189cb428e";
+qrData["91-6"]="a0a1c5ec-715d-47b2-8c90-51d2d96488a6";
+qrData["92-1"]="af5bba80-6131-4197-9d11-72a56ef67d24";
+qrData["92-2"]="7290615c-0e58-4334-ae3b-2fdf33ccc876";
+qrData["92-3"]="1c589ec7-2229-413a-832c-7ec0f32fe324";
+qrData["92-4"]="379e561c-c4ed-4462-a329-c5b9d4ff07ec";
+qrData["92-5"]="17edb438-6dd7-4aec-8913-180ea4c036fb";
+qrData["92-6"]="69222017-95d4-474f-899b-d4c00b799232";
+qrData["93-1"]="3e1af8cd-7de8-498b-9319-3f7f64580682";
+qrData["93-2"]="9aee3eb9-2935-47d3-bc73-96a7c5ace108";
+qrData["93-3"]="f8d34f65-f086-4c18-8701-375ff549e953";
+qrData["93-4"]="83a38bdd-4b67-4be6-86ac-50944b8424ec";
+qrData["93-5"]="47b0098c-f678-4fba-9130-593c446dbf53";
+qrData["93-6"]="72653dbc-94d8-4336-b037-92e1e9764ee0";
+qrData["94-1"]="9384275d-1e93-40a3-a356-59edb0ad379a";
+qrData["94-2"]="177ce06b-4a26-41d1-8596-0ad27198095c";
+qrData["94-3"]="600d999c-f199-4c75-8848-8698c98645fe";
+qrData["94-4"]="25b72a20-f83d-4045-9340-076b2bffc6ef";
+qrData["94-5"]="3c71ee76-1b2b-41cc-a006-feeb5e820c8a";
+qrData["94-6"]="2d8df1af-39ac-4bc2-87c6-cebeabcfad65";
+qrData["95-1"]="79c6b90d-4571-4c78-9569-95a32609d50d";
+qrData["95-2"]="deab1303-2e6b-4813-9398-a08d1b7a755d";
+qrData["95-3"]="a72f2a98-1dc7-4ca8-9438-8a966f67667d";
+qrData["95-4"]="8e726ae7-5b71-4c8e-9fb3-c796a1b8fbab";
+qrData["95-5"]="fe1af955-04d8-4f1e-9cd3-cd501d3c26e8";
+qrData["95-6"]="17451327-f026-4c54-a1d0-19fe373a09ec";
+qrData["96-1"]="1013e1a2-48ba-408d-8c81-0bf5e81c5f9f";
+qrData["96-2"]="46c76b94-33f9-4a7b-861f-b243985d1637";
+qrData["96-3"]="49423bdd-197d-403a-a8f6-d1a0e499b2c2";
+qrData["96-4"]="7f31abe7-3ae7-4ab4-bc71-97bceae61c91";
+qrData["96-5"]="292478cb-639f-4cc7-b485-4169780f7d98";
+qrData["96-6"]="19566279-22cf-4e0c-993f-a7ce1ba0f8d3";
+qrData["97-1"]="09900bfd-9cc8-42ed-81e0-65be121d7fec";
+qrData["97-2"]="70b6ebf6-d2d0-486e-8b8b-303258759378";
+qrData["97-3"]="ef308278-dcd8-4d21-b412-108a8944a7a4";
+qrData["97-4"]="a48a6853-8378-4863-9848-84bf2d3267b6";
+qrData["97-5"]="37b100fc-8713-483a-a5d5-114046ff233f";
+qrData["97-6"]="23d94910-53e1-4fc5-9f5a-eac9399940af";
+qrData["98-1"]="6eb0ae33-f907-4c4f-9c51-9cdab7dbd49c";
+qrData["98-2"]="b7b819ae-cdd5-4add-8f2f-4b113858c6db";
+qrData["98-3"]="0b416a6a-3abd-4ce0-8e64-b17ba89ac80b";
+qrData["98-4"]="1af8ce4b-9657-42c5-b8ba-2d39c7b298b2";
+qrData["98-6"]="4d80e6a1-df71-46c6-98d1-058b02ce466f";
+qrData["99-1"]="ccf71856-73e2-441c-8e17-46699b1734c8";
+qrData["99-2"]="b51ab649-d994-4002-9d74-141f690510fb";
+
+const cellSelect=get('cellSelect'),searchCell=get('searchCell');
+function fillSelect(filter=""){ cellSelect.innerHTML='<option value="">Виберіть комірку</option>';
+  for(let key in qrData){ if(key.toLowerCase().includes(filter.toLowerCase())){ let o=document.createElement('option'); o.value=key;o.textContent=key;cellSelect.appendChild(o);} } }
+fillSelect();
+
+searchCell.oninput=e=>{ e.target.value=e.target.value.replace(/[^0-9\-]/g,''); fillSelect(e.target.value); };
+get('clearSearch').onclick=()=>{ searchCell.value=''; fillSelect(); searchCell.focus(); };
+cellSelect.onchange=()=>{ const qrC=get('qrContainer'); qrC.innerHTML=''; const v=cellSelect.value;
+  if(v){ const data=qrData[v]||""; if(!data){ let p=document.createElement('p'); p.textContent='🔔 Для цієї комірки значення ще не задано.'; p.style.color='rgba(0,0,0,0.6)'; qrC.appendChild(p);} else new QRCode(qrC,{text:data,width:200,height:200}); }};
+updateTotal();
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Ensure qrData exists
+  if (typeof qrData === 'undefined') {
+    console.warn('qrData not found');
+    return;
+  }
+
+  const qrContainer = document.getElementById('qrContainer');
+  const cellSelect = document.getElementById('cellSelect');
+  const searchCell = document.getElementById('searchCell');
+  const clearSearch = document.getElementById('clearSearch');
+  const uuidBox = document.getElementById('uuidBox');
+  const uuidField = document.getElementById('uuidField');
+  const copyUUIDbtn = document.getElementById('copyUUID');
+
+  // Small helper to clear QR display
+  function clearQR() {
+    qrContainer.innerHTML = '';
+    uuidField.value = '';
+    uuidBox.style.display = 'none';
+  }
+
+  // Populate select with keys from qrData (sorted naturally)
+  const keys = Object.keys(qrData).filter(k => qrData[k]).sort((a,b)=>{
+    // sort by numeric rack-row like "12-3"
+    const [as,ap] = a.split('-').map(Number);
+    const [bs,bp] = b.split('-').map(Number);
+    if (as === bs) return ap - bp;
+    return as - bs;
+  });
+  keys.forEach(k=>{
+    const opt = document.createElement('option');
+    opt.value = k;
+    opt.textContent = k;
+    cellSelect.appendChild(opt);
+  });
+
+  // Generate QR for a given key (if uuid present)
+  let currentQRCode = null;
+  function renderQR(key) {
+    const uuid = qrData[key] || '';
+    qrContainer.innerHTML = '';
+    if (!uuid) {
+      uuidBox.style.display = 'none';
+      return;
+    }
+    // Create wrapper so we can add label under QR if desired
+    const wrap = document.createElement('div');
+    wrap.style.display = 'flex';
+    wrap.style.flexDirection = 'column';
+    wrap.style.alignItems = 'center';
+    wrap.style.gap = '8px';
+    // QR size responsive: smaller on narrow screens
+    const size = Math.max(120, Math.min(220, Math.floor(window.innerWidth * 0.35)));
+    const qrEl = document.createElement('div');
+    qrEl.id = 'generatedQR';
+    wrap.appendChild(qrEl);
+    // optional label
+    const lbl = document.createElement('div'); lbl.className = 'qr-label';
+    lbl.textContent = key;
+    lbl.style.fontSize = '0.9rem';
+    lbl.style.color = '#222';
+    wrap.appendChild(lbl);
+
+    qrContainer.appendChild(wrap);
+    try {
+      currentQRCode = new QRCode(qrEl, {
+        text: uuid,
+        width: size,
+        height: size,
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    } catch (e) {
+      // fallback: show text
+      qrEl.textContent = uuid;
+    }
+
+    // show uuid and copy button
+    uuidField.value = uuid;
+    uuidBox.style.display = 'flex';
+
+    // on small screens, scroll to qrContainer so user sees QR
+    setTimeout(()=>{
+      qrContainer.scrollIntoView({behavior:'smooth', block:'center'});
+    }, 120);
+  }
+
+  // handle select change
+  cellSelect.addEventListener('change', ()=>{
+    const key = cellSelect.value;
+    if (!key) return clearQR();
+    renderQR(key);
+  });
+
+  // filter select with search input (mobile-friendly)
+  function filterSelect(q) {
+    const ql = q.trim().toLowerCase();
+    // Save currently selected value
+    const prev = cellSelect.value;
+    cellSelect.innerHTML = '';
+    keys.forEach(k=>{
+      if (!ql || k.toLowerCase().includes(ql)) {
+        const opt = document.createElement('option');
+        opt.value = k;
+        opt.textContent = k;
+        cellSelect.appendChild(opt);
+      }
+    });
+    // try to restore selection if still present
+    if (prev && Array.from(cellSelect.options).some(o=>o.value===prev)) {
+      cellSelect.value = prev;
+    } else if (cellSelect.options.length>0) {
+      cellSelect.selectedIndex = 0;
+      // render first match
+      renderQR(cellSelect.value);
+    } else {
+      clearQR();
+    }
+  }
+
+  searchCell.addEventListener('input', (e)=>{
+    filterSelect(e.target.value);
+  });
+
+  clearSearch.addEventListener('click', ()=>{
+    searchCell.value = '';
+    filterSelect('');
+    searchCell.focus();
+  });
+
+  // Initially, if any option exists, render first
+  if (cellSelect.options.length>0) {
+    // select first visible
+    cellSelect.selectedIndex = 0;
+    renderQR(cellSelect.value);
+  }
+
+  // Copy functionality: try navigator.clipboard, fallback to selection
+  copyUUIDbtn.addEventListener('click', async ()=>{
+    const text = uuidField.value || '';
+    if (!text) return;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        // iOS Safari workaround: temporarily make input editable and select
+        uuidField.removeAttribute('readonly');
+        uuidField.select();
+        uuidField.setSelectionRange(0, text.length);
+        document.execCommand('copy');
+        uuidField.setAttribute('readonly', 'readonly');
+        // deselect
+        window.getSelection().removeAllRanges();
+      }
+      // visual feedback
+      const orig = copyUUIDbtn.innerHTML;
+      copyUUIDbtn.innerHTML = '✅';
+      setTimeout(()=>{ copyUUIDbtn.innerHTML = orig; }, 900);
+    } catch (err) {
+      console.error('Copy failed', err);
+      // fallback: prompt with the UUID so user can long-press to copy on mobile
+      alert('Копіювання не вдалося автоматично. Скопіюйте вручну:\n' + text);
+    }
+  });
+
+  // Make sure touch events don't break selection on mobile within the select
+  cellSelect.addEventListener('touchstart', (e)=>{ /* noop to improve responsiveness */ });
+
+  // Accessibility: allow Enter on search to focus select
+  searchCell.addEventListener('keydown', (e)=>{
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (cellSelect.options.length>0) {
+        cellSelect.focus();
+      }
+    }
+  });
+
+  // Resize handler to re-render QR for better size on orientation change
+  window.addEventListener('orientationchange', ()=> {
+    if (cellSelect.value) {
+      renderQR(cellSelect.value);
+    }
+  });
+});
+</script>
+
+</body>
+</html>
