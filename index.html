@@ -207,8 +207,17 @@ input:checked + .slider:before { transform: translateX(24px); }
 </head>
 <body>
 
+.logo {
+  display: block;
+  margin: 0 auto 1rem auto; /* по центру */
+  
+  width: 150px;  /* 👈 МЕНЯЕШЬ ЭТО */
+  height: auto;  /* сохраняет пропорции */
+}  
+  
 <!-- Меню -->
 <div class="menu" id="menu">
+  <img src="silpo-seeklogo.png" class="logo">
   <h1>📋 МЕНЮ</h1>
   <button id="btnZP">💼 Розрахунок зарплати</button>
   <button id="btnQR">📱 QR-коди комірок</button>
