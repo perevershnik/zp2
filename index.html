@@ -31,23 +31,11 @@ body{
     border-radius:28px;
     padding:30px;
     box-shadow:0 20px 50px rgba(0,0,0,.12);
-    animation:fade .4s ease;
-}
-
-@keyframes fade{
-    from{
-        opacity:0;
-        transform:translateY(15px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
 }
 
 h1{
     text-align:center;
-    margin-bottom:25px;
+    margin-bottom:10px;
     color:#111827;
     font-size:30px;
 }
@@ -121,37 +109,6 @@ input:focus{
     color:#2563eb !important;
 }
 
-.buttons{
-    display:flex;
-    gap:10px;
-    margin-top:20px;
-}
-
-button{
-    flex:1;
-    border:none;
-    border-radius:14px;
-    padding:14px;
-    font-size:16px;
-    font-weight:600;
-    cursor:pointer;
-    transition:.2s;
-}
-
-.share{
-    background:#229ED9;
-    color:white;
-}
-
-.clear{
-    background:#ef4444;
-    color:white;
-}
-
-button:hover{
-    transform:translateY(-2px);
-}
-
 .footer{
     text-align:center;
     margin-top:20px;
@@ -165,18 +122,19 @@ button:hover{
 <div class="card">
 
 <h1>💰 Калькулятор зарплати</h1>
+
 <div class="subtitle">
 Розрахунок зарплати GROSS та NET
 </div>
 
 <div class="input-group">
 <label>Відпрацьовано годин</label>
-<input type="number" id="hours" min="0" value="168">
+<input type="number" id="hours" min="0" placeholder="Введіть години">
 </div>
 
 <div class="input-group">
 <label>Фактична результативність</label>
-<input type="number" id="productivity" min="0" value="100">
+<input type="number" id="productivity" min="0" placeholder="Введіть результативність">
 </div>
 
 <div class="result">
@@ -185,46 +143,36 @@ button:hover{
 
 <div class="row">
 <span>Оплата годин</span>
-<span id="hoursPay">0 грн</span>
+<span id="hoursPay">—</span>
 </div>
 
 <div class="row">
 <span>Стартовий бонус</span>
-<span id="startBonus">0 грн</span>
+<span id="startBonus">—</span>
 </div>
 
 <div class="row">
 <span>Бонус за результативність</span>
-<span id="resultBonus">0 грн</span>
+<span id="resultBonus">—</span>
 </div>
 
 <div class="row total">
 <span>Загалом GROSS</span>
-<span id="grossTotal">0 грн</span>
+<span id="grossTotal">—</span>
 </div>
 
 <div class="section-title">До виплати</div>
 
 <div class="row">
 <span>Податки (22%)</span>
-<span id="taxes">0 грн</span>
+<span id="taxes">—</span>
 </div>
 
 <div class="row total">
 <span class="net">Загалом NET</span>
-<span class="net" id="netTotal">0 грн</span>
+<span class="net" id="netTotal">—</span>
 </div>
 
-</div>
-
-<div class="buttons">
-<button class="share" onclick="shareTelegram()">
-📤 Поділитися
-</button>
-
-<button class="clear" onclick="clearData()">
-🗑 Очистити
-</button>
 </div>
 
 <div class="footer">
@@ -260,14 +208,26 @@ function formatMoney(value){
 
 function calculate(){
 
-    const hours =
-        Number(document.getElementById('hours').value) || 0;
+    const hoursInput =
+        document.getElementById('hours').value;
 
-    const productivity =
-        Number(document.getElementById('productivity').value) || 0;
+    const productivityInput =
+        document.getElementById('productivity').value;
 
-    localStorage.setItem('hours',hours);
-    localStorage.setItem('productivity',productivity);
+    if(hoursInput === '' || productivityInput === ''){
+
+        document.getElementById('hoursPay').textContent = '—';
+        document.getElementById('startBonus').textContent = '—';
+        document.getElementById('resultBonus').textContent = '—';
+        document.getElementById('grossTotal').textContent = '—';
+        document.getElementById('taxes').textContent = '—';
+        document.getElementById('netTotal').textContent = '—';
+
+        return;
+    }
+
+    const hours = Number(hoursInput);
+    const productivity = Number(productivityInput);
 
     const hoursPay =
         hours * HOURLY_RATE;
@@ -315,57 +275,13 @@ function calculate(){
         formatMoney(net);
 }
 
-function shareTelegram(){
-
-    const text =
-`💰 Розрахунок зарплати
-
-Годин: ${document.getElementById('hours').value}
-Результативність: ${document.getElementById('productivity').value}
-
-GROSS: ${document.getElementById('grossTotal').textContent}
-NET: ${document.getElementById('netTotal').textContent}`;
-
-    window.open(
-        'https://t.me/share/url?text=' +
-        encodeURIComponent(text),
-        '_blank'
-    );
-}
-
-function clearData(){
-
-    document.getElementById('hours').value = '';
-    document.getElementById('productivity').value = '';
-
-    localStorage.removeItem('hours');
-    localStorage.removeItem('productivity');
-
-    calculate();
-}
-
 document.getElementById('hours')
-.addEventListener('input',calculate);
+.addEventListener('input', calculate);
 
 document.getElementById('productivity')
-.addEventListener('input',calculate);
+.addEventListener('input', calculate);
 
-window.onload = () => {
-
-    const savedHours =
-        localStorage.getItem('hours');
-
-    const savedProductivity =
-        localStorage.getItem('productivity');
-
-    if(savedHours !== null)
-        document.getElementById('hours').value = savedHours;
-
-    if(savedProductivity !== null)
-        document.getElementById('productivity').value = savedProductivity;
-
-    calculate();
-};
+window.onload = calculate;
 
 </script>
 
