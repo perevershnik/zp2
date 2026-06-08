@@ -3,36 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Калькулятор бонусу</title>
+<title>Калькулятор зарплати</title>
 
 <style>
 *{
+    margin:0;
+    padding:0;
     box-sizing:border-box;
     font-family:Segoe UI,Arial,sans-serif;
 }
 
 body{
-    margin:0;
-    background:#f3f5f7;
+    background:#eef2f7;
     display:flex;
     justify-content:center;
     align-items:center;
     min-height:100vh;
-    padding:20px;
+    padding:25px;
 }
 
 .card{
     width:100%;
-    max-width:600px;
-    background:white;
+    max-width:650px;
+    background:#fff;
     border-radius:18px;
     padding:30px;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    box-shadow:0 12px 35px rgba(0,0,0,.12);
 }
 
 h1{
-    margin-top:0;
     text-align:center;
+    margin-bottom:25px;
 }
 
 .field{
@@ -41,16 +42,29 @@ h1{
 
 label{
     display:block;
-    margin-bottom:7px;
+    margin-bottom:6px;
     font-weight:600;
 }
 
 input{
     width:100%;
-    padding:12px;
-    border:1px solid #d8d8d8;
+    padding:13px;
+    font-size:18px;
     border-radius:10px;
-    font-size:17px;
+    border:1px solid #ccc;
+}
+
+.info{
+    margin:25px 0;
+    padding:15px;
+    background:#f7f7f7;
+    border-radius:10px;
+}
+
+.info div{
+    display:flex;
+    justify-content:space-between;
+    margin:8px 0;
 }
 
 .result{
@@ -59,7 +73,7 @@ input{
     padding-top:20px;
 }
 
-.item{
+.row{
     display:flex;
     justify-content:space-between;
     margin:12px 0;
@@ -67,16 +81,23 @@ input{
 }
 
 .total{
-    margin-top:20px;
+    margin-top:25px;
+    border-top:2px solid #ddd;
     padding-top:20px;
-    border-top:1px solid #ddd;
-    font-size:24px;
+    font-size:28px;
+    color:#11823b;
     font-weight:bold;
-    color:#0b7a33;
+    display:flex;
+    justify-content:space-between;
 }
 
-small{
-    color:#888;
+.green{
+    color:#11823b;
+    font-weight:bold;
+}
+
+.gray{
+    color:#777;
 }
 </style>
 
@@ -85,7 +106,7 @@ small{
 
 <div class="card">
 
-<h1>Калькулятор бонусу</h1>
+<h1>Калькулятор зарплати</h1>
 
 <div class="field">
 <label>Відпрацьовано годин</label>
@@ -102,49 +123,62 @@ small{
 <input id="goal" type="number" value="99">
 </div>
 
-<div class="field">
-<label>Тариф стартового бонусу</label>
-<input id="rate" type="number" step="0.01" value="0.25">
+<div class="info">
+<div><span>Ставка за 1 годину</span><b>102.80 грн</b></div>
+<div><span>Тариф стартового бонусу</span><b>0.25</b></div>
 </div>
 
 <div class="result">
 
-<div class="item">
+<div class="row">
+<span>Основна зарплата</span>
+<b id="salary"></b>
+</div>
+
+<div class="row">
 <span>Тариф перевиконання</span>
 <b id="overRate"></b>
 </div>
 
-<div class="item">
+<div class="row">
 <span>Стартовий бонус</span>
 <b id="startBonus"></b>
 </div>
 
-<div class="item">
+<div class="row">
 <span>Бонус за результативність</span>
 <b id="perfBonus"></b>
 </div>
 
-<div class="item">
+<div class="row">
 <span>Коефіцієнт (15%)</span>
 <b id="coef"></b>
 </div>
 
+<div class="row green">
+<span>Загальний бонус</span>
+<b id="bonus"></b>
+</div>
+
 <div class="total">
-Загальний бонус:
+<span>Загальний дохід</span>
 <span id="total"></span>
 </div>
 
 </div>
 
-<small>Розрахунок повністю відповідає Excel.</small>
-
 </div>
 
 <script>
 
-const inputs=document.querySelectorAll("input");
+const HOUR_RATE = 102.8;
+const START_RATE = 0.25;
 
-inputs.forEach(i=>i.addEventListener("input",calc));
+const hours=document.getElementById("hours");
+const fact=document.getElementById("fact");
+const goal=document.getElementById("goal");
+
+document.querySelectorAll("input").forEach(i=>i.addEventListener("input",calc));
 
 function money(x){
     return x.toLocaleString("uk-UA",{
@@ -155,55 +189,44 @@ function money(x){
 
 function calc(){
 
-let hours=Number(hoursInput.value);
-let fact=Number(factInput.value);
-let goal=Number(goalInput.value);
-let rate=Number(rateInput.value);
+const h=Number(hours.value)||0;
+const f=Number(fact.value)||0;
+const g=Number(goal.value)||0;
+
+const salary=h*HOUR_RATE;
 
 let overRate=0;
 
-if(fact>goal){
-
-    if(fact<120)
+if(f>g){
+    if(f<120)
         overRate=0.6;
-    else if(fact<150)
+    else if(f<150)
         overRate=1;
-    else if(fact<200)
+    else if(f<200)
         overRate=1.4;
     else
         overRate=1.6;
 }
 
-let startBonus=0;
+const startBonus=(f>=g)?g*START_RATE*h:0;
 
-if(fact>=goal)
-    startBonus=goal*rate*hours;
+const perfBonus=(startBonus>0)?(f-g)*h*overRate:0;
 
-let perfBonus=0;
+const coef=(startBonus+perfBonus)*0.15;
 
-if(startBonus>0)
-    perfBonus=(fact-goal)*hours*overRate;
+const bonus=startBonus+perfBonus+coef;
 
-let coef=(startBonus+perfBonus)*0.15;
+const total=salary+bonus;
 
-let total=startBonus+perfBonus+coef;
-
+document.getElementById("salary").textContent=money(salary);
 document.getElementById("overRate").textContent=overRate.toFixed(2);
-
 document.getElementById("startBonus").textContent=money(startBonus);
-
 document.getElementById("perfBonus").textContent=money(perfBonus);
-
 document.getElementById("coef").textContent=money(coef);
-
+document.getElementById("bonus").textContent=money(bonus);
 document.getElementById("total").textContent=money(total);
 
 }
-
-const hoursInput=document.getElementById("hours");
-const factInput=document.getElementById("fact");
-const goalInput=document.getElementById("goal");
-const rateInput=document.getElementById("rate");
 
 calc();
 
