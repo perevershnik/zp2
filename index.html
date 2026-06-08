@@ -5,85 +5,158 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Калькулятор зарплати</title>
 
+<link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4b0.svg">
+
 <style>
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Inter,Arial,sans-serif;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Inter,Arial,sans-serif;
 }
 
 body{
-background:#f4f6f8;
-min-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-padding:20px;
+    min-height:100vh;
+    background:linear-gradient(135deg,#f8fafc,#e2e8f0);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
 }
 
 .card{
-width:100%;
-max-width:550px;
-background:#fff;
-border-radius:24px;
-padding:30px;
-box-shadow:0 15px 40px rgba(0,0,0,.08);
+    width:100%;
+    max-width:550px;
+    background:#fff;
+    border-radius:28px;
+    padding:30px;
+    box-shadow:0 20px 50px rgba(0,0,0,.12);
+    animation:fade .4s ease;
+}
+
+@keyframes fade{
+    from{
+        opacity:0;
+        transform:translateY(15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 }
 
 h1{
-text-align:center;
-margin-bottom:25px;
-color:#222;
-font-size:28px;
+    text-align:center;
+    margin-bottom:25px;
+    color:#111827;
+    font-size:30px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#6b7280;
+    margin-bottom:25px;
+    font-size:14px;
 }
 
 .input-group{
-margin-bottom:20px;
+    margin-bottom:18px;
 }
 
 label{
-display:block;
-margin-bottom:8px;
-font-weight:600;
-color:#444;
+    display:block;
+    margin-bottom:8px;
+    color:#374151;
+    font-weight:600;
 }
 
 input{
-width:100%;
-padding:14px;
-font-size:18px;
-border:2px solid #e5e7eb;
-border-radius:14px;
-transition:.2s;
+    width:100%;
+    padding:14px 16px;
+    border:2px solid #e5e7eb;
+    border-radius:14px;
+    font-size:18px;
+    transition:.2s;
 }
 
 input:focus{
-outline:none;
-border-color:#2563eb;
+    outline:none;
+    border-color:#2563eb;
 }
 
 .result{
-margin-top:25px;
+    margin-top:25px;
+}
+
+.section-title{
+    font-weight:700;
+    margin-top:18px;
+    margin-bottom:8px;
+    color:#111827;
 }
 
 .row{
-display:flex;
-justify-content:space-between;
-padding:12px 0;
-border-bottom:1px solid #eee;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 0;
+    border-bottom:1px solid #f1f5f9;
+}
+
+.row span:first-child{
+    color:#475569;
+}
+
+.row span:last-child{
+    font-weight:600;
 }
 
 .total{
-font-size:24px;
-font-weight:700;
-color:#16a34a;
-margin-top:10px;
-border-bottom:none;
+    font-size:20px;
+    font-weight:700;
+    color:#16a34a;
 }
 
-.hidden{
-display:none;
+.net{
+    color:#2563eb !important;
+}
+
+.buttons{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+
+button{
+    flex:1;
+    border:none;
+    border-radius:14px;
+    padding:14px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.share{
+    background:#229ED9;
+    color:white;
+}
+
+.clear{
+    background:#ef4444;
+    color:white;
+}
+
+button:hover{
+    transform:translateY(-2px);
+}
+
+.footer{
+    text-align:center;
+    margin-top:20px;
+    color:#94a3b8;
+    font-size:12px;
 }
 </style>
 </head>
@@ -92,24 +165,23 @@ display:none;
 <div class="card">
 
 <h1>💰 Калькулятор зарплати</h1>
+<div class="subtitle">
+Розрахунок зарплати GROSS та NET
+</div>
 
 <div class="input-group">
 <label>Відпрацьовано годин</label>
-<input type="number" id="hours" value="0">
+<input type="number" id="hours" min="0" value="168">
 </div>
 
 <div class="input-group">
 <label>Фактична результативність</label>
-<input type="number" id="productivity" value="99">
-</div>
-
-<!-- Скрытые поля из Excel -->
-<div class="hidden">
-<input id="target" value="99">
-<input id="startTariff" value="0.25">
+<input type="number" id="productivity" min="0" value="100">
 </div>
 
 <div class="result">
+
+<div class="section-title">Нарахування (GROSS)</div>
 
 <div class="row">
 <span>Оплата годин</span>
@@ -127,71 +199,173 @@ display:none;
 </div>
 
 <div class="row total">
-<span>Загальна зарплата</span>
-<span id="totalSalary">0 грн</span>
+<span>Загалом GROSS</span>
+<span id="grossTotal">0 грн</span>
 </div>
 
+<div class="section-title">До виплати</div>
+
+<div class="row">
+<span>Податки (22%)</span>
+<span id="taxes">0 грн</span>
+</div>
+
+<div class="row total">
+<span class="net">Загалом NET</span>
+<span class="net" id="netTotal">0 грн</span>
+</div>
+
+</div>
+
+<div class="buttons">
+<button class="share" onclick="shareTelegram()">
+📤 Поділитися
+</button>
+
+<button class="clear" onclick="clearData()">
+🗑 Очистити
+</button>
+</div>
+
+<div class="footer">
+Аня коза
 </div>
 
 </div>
 
 <script>
 
-function getOverTariff(productivity){
+const HOURLY_RATE = 133.50;
+const TARGET = 99;
+const START_TARIFF = 0.25;
+const TAX = 0.22;
 
-if(productivity <= 99) return 0;
+function getBonusTariff(productivity){
 
-if(productivity < 120) return 0.6;
-if(productivity < 150) return 1;
-if(productivity < 200) return 1.4;
+    if(productivity <= 99) return 0;
 
-return 1.6;
+    if(productivity < 120) return 0.6;
+    if(productivity < 150) return 1;
+    if(productivity < 200) return 1.4;
+
+    return 1.6;
+}
+
+function formatMoney(value){
+    return value.toLocaleString('uk-UA',{
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+    }) + ' грн';
 }
 
 function calculate(){
 
-const hours = Number(document.getElementById('hours').value) || 0;
-const productivity = Number(document.getElementById('productivity').value) || 0;
+    const hours =
+        Number(document.getElementById('hours').value) || 0;
 
-const target = 99;
-const startTariff = 0.25;
+    const productivity =
+        Number(document.getElementById('productivity').value) || 0;
 
-const hoursPay = hours * 104.13;
+    localStorage.setItem('hours',hours);
+    localStorage.setItem('productivity',productivity);
 
-const startBonus =
-productivity >= target
-? target * startTariff * hours * 0.78
-: 0;
+    const hoursPay =
+        hours * HOURLY_RATE;
 
-const overTariff = getOverTariff(productivity);
+    const startBonus =
+        productivity >= TARGET
+        ? TARGET * START_TARIFF * hours
+        : 0;
 
-const resultBonus =
-startBonus > 0
-? (productivity - target) * hours * overTariff * 0.78
-: 0;
+    const tariff =
+        getBonusTariff(productivity);
 
-const total =
-hoursPay +
-startBonus +
-resultBonus;
+    const resultBonus =
+        productivity > TARGET
+        ? (productivity - TARGET) * hours * tariff
+        : 0;
 
-document.getElementById('hoursPay').textContent =
-hoursPay.toFixed(2) + " грн";
+    const gross =
+        hoursPay +
+        startBonus +
+        resultBonus;
 
-document.getElementById('startBonus').textContent =
-startBonus.toFixed(2) + " грн";
+    const taxes =
+        gross * TAX;
 
-document.getElementById('resultBonus').textContent =
-resultBonus.toFixed(2) + " грн";
+    const net =
+        gross - taxes;
 
-document.getElementById('totalSalary').textContent =
-total.toFixed(2) + " грн";
+    document.getElementById('hoursPay').textContent =
+        formatMoney(hoursPay);
+
+    document.getElementById('startBonus').textContent =
+        formatMoney(startBonus);
+
+    document.getElementById('resultBonus').textContent =
+        formatMoney(resultBonus);
+
+    document.getElementById('grossTotal').textContent =
+        formatMoney(gross);
+
+    document.getElementById('taxes').textContent =
+        formatMoney(taxes);
+
+    document.getElementById('netTotal').textContent =
+        formatMoney(net);
 }
 
-document.getElementById('hours').addEventListener('input', calculate);
-document.getElementById('productivity').addEventListener('input', calculate);
+function shareTelegram(){
 
-calculate();
+    const text =
+`💰 Розрахунок зарплати
+
+Годин: ${document.getElementById('hours').value}
+Результативність: ${document.getElementById('productivity').value}
+
+GROSS: ${document.getElementById('grossTotal').textContent}
+NET: ${document.getElementById('netTotal').textContent}`;
+
+    window.open(
+        'https://t.me/share/url?text=' +
+        encodeURIComponent(text),
+        '_blank'
+    );
+}
+
+function clearData(){
+
+    document.getElementById('hours').value = '';
+    document.getElementById('productivity').value = '';
+
+    localStorage.removeItem('hours');
+    localStorage.removeItem('productivity');
+
+    calculate();
+}
+
+document.getElementById('hours')
+.addEventListener('input',calculate);
+
+document.getElementById('productivity')
+.addEventListener('input',calculate);
+
+window.onload = () => {
+
+    const savedHours =
+        localStorage.getItem('hours');
+
+    const savedProductivity =
+        localStorage.getItem('productivity');
+
+    if(savedHours !== null)
+        document.getElementById('hours').value = savedHours;
+
+    if(savedProductivity !== null)
+        document.getElementById('productivity').value = savedProductivity;
+
+    calculate();
+};
 
 </script>
 
