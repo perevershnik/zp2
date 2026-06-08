@@ -7,87 +7,83 @@
 
 <style>
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Inter,Arial,sans-serif;
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter,Arial,sans-serif;
 }
 
 body{
-    background:#f5f7fa;
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:20px;
+background:#f4f6f8;
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
 }
 
 .card{
-    width:100%;
-    max-width:500px;
-    background:white;
-    border-radius:24px;
-    padding:30px;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
+width:100%;
+max-width:550px;
+background:#fff;
+border-radius:24px;
+padding:30px;
+box-shadow:0 15px 40px rgba(0,0,0,.08);
 }
 
 h1{
-    text-align:center;
-    margin-bottom:25px;
-    color:#222;
-    font-size:28px;
+text-align:center;
+margin-bottom:25px;
+color:#222;
+font-size:28px;
 }
 
 .input-group{
-    margin-bottom:20px;
+margin-bottom:20px;
 }
 
 label{
-    display:block;
-    margin-bottom:8px;
-    color:#555;
-    font-weight:600;
+display:block;
+margin-bottom:8px;
+font-weight:600;
+color:#444;
 }
 
 input{
-    width:100%;
-    padding:14px;
-    border:2px solid #e5e7eb;
-    border-radius:14px;
-    font-size:18px;
-    transition:.2s;
+width:100%;
+padding:14px;
+font-size:18px;
+border:2px solid #e5e7eb;
+border-radius:14px;
+transition:.2s;
 }
 
 input:focus{
-    outline:none;
-    border-color:#2563eb;
+outline:none;
+border-color:#2563eb;
 }
 
 .result{
-    margin-top:25px;
+margin-top:25px;
 }
 
 .row{
-    display:flex;
-    justify-content:space-between;
-    padding:12px 0;
-    border-bottom:1px solid #eee;
+display:flex;
+justify-content:space-between;
+padding:12px 0;
+border-bottom:1px solid #eee;
 }
 
 .total{
-    margin-top:15px;
-    padding-top:15px;
-    border-top:2px solid #ddd;
-    font-size:24px;
-    font-weight:700;
-    color:#16a34a;
+font-size:24px;
+font-weight:700;
+color:#16a34a;
+margin-top:10px;
+border-bottom:none;
 }
 
-.footer{
-    text-align:center;
-    margin-top:20px;
-    color:#888;
-    font-size:12px;
+.hidden{
+display:none;
 }
 </style>
 </head>
@@ -104,7 +100,13 @@ input:focus{
 
 <div class="input-group">
 <label>Фактична результативність</label>
-<input type="number" id="productivity" value="100">
+<input type="number" id="productivity" value="99">
+</div>
+
+<!-- Скрытые поля из Excel -->
+<div class="hidden">
+<input id="target" value="99">
+<input id="startTariff" value="0.25">
 </div>
 
 <div class="result">
@@ -125,75 +127,69 @@ input:focus{
 </div>
 
 <div class="row total">
-<span>Зарплата NET</span>
+<span>Загальна зарплата</span>
 <span id="totalSalary">0 грн</span>
 </div>
 
-</div>
-
-<div class="footer">
-Версія 1.0
 </div>
 
 </div>
 
 <script>
 
-const RATE = 102.8;
-const TARGET = 100;
-const START_TARIFF = 0.6;
+function getOverTariff(productivity){
+
+if(productivity <= 99) return 0;
+
+if(productivity < 120) return 0.6;
+if(productivity < 150) return 1;
+if(productivity < 200) return 1.4;
+
+return 1.6;
+}
 
 function calculate(){
 
-    const hours = Number(document.getElementById('hours').value) || 0;
-    const productivity = Number(document.getElementById('productivity').value) || 0;
+const hours = Number(document.getElementById('hours').value) || 0;
+const productivity = Number(document.getElementById('productivity').value) || 0;
 
-    const hoursPay = hours * RATE;
+const target = 99;
+const startTariff = 0.25;
 
-    let bonusTariff = 0;
+const hoursPay = hours * 102.8;
 
-    if(productivity > TARGET){
-        if(productivity < 120){
-            bonusTariff = 0.6;
-        }else if(productivity < 150){
-            bonusTariff = 1;
-        }else if(productivity < 200){
-            bonusTariff = 1.4;
-        }else{
-            bonusTariff = 1.6;
-        }
-    }
+const startBonus =
+productivity >= target
+? target * startTariff * hours * 0.78
+: 0;
 
-    const startBonus =
-        productivity >= TARGET
-        ? TARGET * START_TARIFF * hours * 0.78
-        : 0;
+const overTariff = getOverTariff(productivity);
 
-    const resultBonus =
-        productivity > TARGET
-        ? (productivity - TARGET) * hours * bonusTariff * 0.78
-        : 0;
+const resultBonus =
+startBonus > 0
+? (productivity - target) * hours * overTariff * 0.78
+: 0;
 
-    const total =
-        hoursPay +
-        startBonus +
-        resultBonus;
+const total =
+hoursPay +
+startBonus +
+resultBonus;
 
-    document.getElementById('hoursPay').innerText =
-        hoursPay.toFixed(2) + ' грн';
+document.getElementById('hoursPay').textContent =
+hoursPay.toFixed(2) + " грн";
 
-    document.getElementById('startBonus').innerText =
-        startBonus.toFixed(2) + ' грн';
+document.getElementById('startBonus').textContent =
+startBonus.toFixed(2) + " грн";
 
-    document.getElementById('resultBonus').innerText =
-        resultBonus.toFixed(2) + ' грн';
+document.getElementById('resultBonus').textContent =
+resultBonus.toFixed(2) + " грн";
 
-    document.getElementById('totalSalary').innerText =
-        total.toFixed(2) + ' грн';
+document.getElementById('totalSalary').textContent =
+total.toFixed(2) + " грн";
 }
 
-document.getElementById('hours').addEventListener('input',calculate);
-document.getElementById('productivity').addEventListener('input',calculate);
+document.getElementById('hours').addEventListener('input', calculate);
+document.getElementById('productivity').addEventListener('input', calculate);
 
 calculate();
 
