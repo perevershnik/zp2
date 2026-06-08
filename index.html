@@ -2,93 +2,202 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Калькулятор зарплати</title>
+
 <style>
-*{box-sizing:border-box;font-family:Segoe UI,Arial,sans-serif}
-body{margin:0;background:#eef2f7;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
-.card{background:#fff;max-width:650px;width:100%;padding:28px;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.12)}
-h1{text-align:center;margin-top:0}
-.field{margin:18px 0}
-label{display:block;font-weight:600;margin-bottom:6px}
-input[type=number]{width:100%;padding:12px;font-size:18px;border:1px solid #ccc;border-radius:10px}
-.row,.total{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee}
-.total{border:none;font-size:26px;font-weight:700;color:#11823b;padding-top:18px}
-.info{background:#f5f5f5;padding:12px;border-radius:10px;margin:18px 0}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Inter,Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fa;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.card{
+    width:100%;
+    max-width:500px;
+    background:white;
+    border-radius:24px;
+    padding:30px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+    color:#222;
+    font-size:28px;
+}
+
+.input-group{
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    margin-bottom:8px;
+    color:#555;
+    font-weight:600;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    border:2px solid #e5e7eb;
+    border-radius:14px;
+    font-size:18px;
+    transition:.2s;
+}
+
+input:focus{
+    outline:none;
+    border-color:#2563eb;
+}
+
+.result{
+    margin-top:25px;
+}
+
+.row{
+    display:flex;
+    justify-content:space-between;
+    padding:12px 0;
+    border-bottom:1px solid #eee;
+}
+
+.total{
+    margin-top:15px;
+    padding-top:15px;
+    border-top:2px solid #ddd;
+    font-size:24px;
+    font-weight:700;
+    color:#16a34a;
+}
+
+.footer{
+    text-align:center;
+    margin-top:20px;
+    color:#888;
+    font-size:12px;
+}
 </style>
 </head>
 <body>
+
 <div class="card">
-<h1>Калькулятор зарплати</h1>
 
-<div class="field">
+<h1>💰 Калькулятор зарплати</h1>
+
+<div class="input-group">
 <label>Відпрацьовано годин</label>
-<input id="hours" type="number" value="133">
+<input type="number" id="hours" value="0">
 </div>
 
-<div class="field">
+<div class="input-group">
 <label>Фактична результативність</label>
-<input id="fact" type="number" value="133">
+<input type="number" id="productivity" value="100">
 </div>
 
-<div class="info">
-<div>Ціль по результативності: <b>99</b></div>
-<div>Ставка: <b>102.80 грн/год</b></div>
-<div>Стартовий тариф: <b>0.25</b></div>
-<div>Податок на бонуси: <b>22%</b></div>
+<div class="result">
+
+<div class="row">
+<span>Оплата годин</span>
+<span id="hoursPay">0 грн</span>
 </div>
 
-<div class="row"><span>Основна зарплата</span><b id="salary"></b></div>
-<div class="row"><span>Тариф перевиконання</span><b id="over"></b></div>
-<div class="row"><span>Стартовий бонус</span><b id="start"></b></div>
-<div class="row"><span>Бонус за результативність</span><b id="perf"></b></div>
-<div class="row"><span><b>Загальний бонус</b></span><b id="bonus"></b></div>
-<div class="total"><span>Загальний дохід</span><span id="total"></span></div>
+<div class="row">
+<span>Стартовий бонус</span>
+<span id="startBonus">0 грн</span>
+</div>
+
+<div class="row">
+<span>Бонус за результативність</span>
+<span id="resultBonus">0 грн</span>
+</div>
+
+<div class="row total">
+<span>Зарплата NET</span>
+<span id="totalSalary">0 грн</span>
+</div>
+
+</div>
+
+<div class="footer">
+Версія 1.0
+</div>
 
 </div>
 
 <script>
-const GOAL=99,HOUR_RATE=102.8,START_RATE=0.25,TAX=0.22;
-const hours=document.getElementById('hours');
-const fact=document.getElementById('fact');
 
-function money(v){
- return v.toLocaleString('uk-UA',{minimumFractionDigits:2,maximumFractionDigits:2})+' грн';
+const RATE = 102.8;
+const TARGET = 100;
+const START_TARIFF = 0.6;
+
+function calculate(){
+
+    const hours = Number(document.getElementById('hours').value) || 0;
+    const productivity = Number(document.getElementById('productivity').value) || 0;
+
+    const hoursPay = hours * RATE;
+
+    let bonusTariff = 0;
+
+    if(productivity > TARGET){
+        if(productivity < 120){
+            bonusTariff = 0.6;
+        }else if(productivity < 150){
+            bonusTariff = 1;
+        }else if(productivity < 200){
+            bonusTariff = 1.4;
+        }else{
+            bonusTariff = 1.6;
+        }
+    }
+
+    const startBonus =
+        productivity >= TARGET
+        ? TARGET * START_TARIFF * hours * 0.78
+        : 0;
+
+    const resultBonus =
+        productivity > TARGET
+        ? (productivity - TARGET) * hours * bonusTariff * 0.78
+        : 0;
+
+    const total =
+        hoursPay +
+        startBonus +
+        resultBonus;
+
+    document.getElementById('hoursPay').innerText =
+        hoursPay.toFixed(2) + ' грн';
+
+    document.getElementById('startBonus').innerText =
+        startBonus.toFixed(2) + ' грн';
+
+    document.getElementById('resultBonus').innerText =
+        resultBonus.toFixed(2) + ' грн';
+
+    document.getElementById('totalSalary').innerText =
+        total.toFixed(2) + ' грн';
 }
 
-function calc(){
- const h=+hours.value||0;
- const f=+fact.value||0;
+document.getElementById('hours').addEventListener('input',calculate);
+document.getElementById('productivity').addEventListener('input',calculate);
 
- const salary=h*HOUR_RATE;
+calculate();
 
- let over=0;
- if(f>GOAL){
-   if(f<120) over=0.6;
-   else if(f<150) over=1;
-   else if(f<200) over=1.4;
-   else over=1.6;
- }
-
- let start=(f>=GOAL)?GOAL*START_RATE*h:0;
- let perf=(start>0)?(f-GOAL)*h*over:0;
-
- start*=0.78;
- perf*=0.78;
-
- const bonus=start+perf;
- const total=salary+bonus;
-
- document.getElementById('salary').textContent=money(salary);
- document.getElementById('over').textContent=over.toFixed(2);
- document.getElementById('start').textContent=money(start);
- document.getElementById('perf').textContent=money(perf);
- document.getElementById('bonus').textContent=money(bonus);
- document.getElementById('total').textContent=money(total);
-}
-hours.oninput=calc;
-fact.oninput=calc;
-calc();
 </script>
+
 </body>
 </html>
